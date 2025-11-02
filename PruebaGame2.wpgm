@@ -1,0 +1,43 @@
+import wollok.game.*
+import Personajes2.*
+
+//
+
+program pruebaGame {
+  
+  game.title("Pinga!")
+
+  //limites del juego
+  game.width(20)
+  game.height(10)
+  game.cellSize(50)
+  
+  //fondo
+  game.boardGround("fondo1.png")
+
+  //personaje principal
+  game.addVisual(personaje)
+  //movimiento
+  keyboard.w().onPressDo({personaje.subir()})
+  //keyboard.w().onPressDo({personaje.mirandoAlNorte()})
+  keyboard.s().onPressDo({personaje.bajar()})
+  keyboard.d().onPressDo({personaje.irADerecha()})
+  keyboard.a().onPressDo({personaje.irAIzquierda()})
+  //acciones¿?
+
+  // rivales
+  const rivales = [new Oso(numero=1), new Abejita(numero=1)]
+	
+	rivales.forEach { rival => 
+		game.addVisual(rival)
+		game.whenCollideDo(rival, { personaje =>
+			personaje.chocarCon(rival)
+			game.say(personaje, "Bicho de mier...")
+			if (personaje.juegoTerminado()) {
+				game.say(personaje, "¿Cague?")
+				game.onTick(5000, "Cagaste", { game.stop() })
+      }})
+      game.onTick(1.randomUpTo(5) * 500, "movimiento", {rival.acercarseA(personaje)})} //game.onTick(1.randomUpTo(5) * 500, "movimiento", {rival.acercarseA(personaje)})
+  //start
+  game.start()
+}
