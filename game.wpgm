@@ -1,0 +1,8 @@
+import wollok.game.*
+import visuales.*
+import nivel.*
+
+program pruebaGame {
+  nivel.iniciarJuego()
+  game.start()
+}
