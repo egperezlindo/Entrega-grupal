@@ -1,25 +1,18 @@
-/**
- * Importaciones principales del juego.
- * visuales.wlk: Contiene todas las clases y objetos visibles (Personajes, Enemigos, Items).
- * nivel.wlk: Contiene el objeto 'nivel' que actúa como el controlador principal del juego.
- */
 import wollok.game.*
 import visuales.*
 import nivel.*
 
-/**
- * Punto de entrada principal del programa.
- * Esto es lo que se ejecuta al darle "Play" a `game.wpgm`.
- */
-program pruebaGame {
+program seisBitsRPG {
+    
+    // 1. Llama a 'nivel' para configurar todo el juego.
+    nivel.iniciarJuego()
+    
+    // 2. Inicia la librería 'wollok.game', abriendo la ventana del juego.
+    game.start()
 
-	// 1. Llama a 'nivel' para configurar todo el juego:
-	//    - Define el tamaño del tablero.
-	//    - Carga al mago.
-	//    - Configura los controles (teclado).
-	//    - Carga el primer escenario.
-	nivel.iniciarJuego()
-	
-	// 2. Inicia la librería 'wollok.game', abriendo la ventana del juego.
-	game.start()
+    
+
+    // ¡CORREGIDO! Debe ser 'visuales.invi' porque 'invi' vive en el archivo 'visuales'.
+    // keyboard.f().onPressDo { game.say(mago, "Atacaste a Avispa por 100!") }  
+
 }
