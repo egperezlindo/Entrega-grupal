@@ -1,18 +1,16 @@
 import wollok.game.*
 import visuales.*
 import nivel.*
+import musica.*
 
 program seisBitsRPG {
     
     // 1. Llama a 'nivel' para configurar todo el juego.
     nivel.iniciarJuego()
-    
+
     // 2. Inicia la librería 'wollok.game', abriendo la ventana del juego.
     game.start()
 
-    
-
     // ¡CORREGIDO! Debe ser 'visuales.invi' porque 'invi' vive en el archivo 'visuales'.
     // keyboard.f().onPressDo { game.say(mago, "Atacaste a Avispa por 100!") }  
-
 }

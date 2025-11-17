@@ -1,5 +1,7 @@
 import wollok.game.*
 import visuales.* // Importa a los "actores"
+import musica.* //importa obj musicaDeFondo
+import objetoFondoGano.* //importa objetoFondoGano
 
 /**
  * Objeto principal que actúa como el "Controlador del Juego".
@@ -21,13 +23,14 @@ object nivel {
         visuales.slime,
         visuales.dragon
     ]
-    
-    
+
     /**
      * Método de inicialización principal.
      */
     method iniciarJuego() {
-        
+        //musica de fondo
+        musicaDeFondo.play() // por temas con la API de Chrome, la música no se activa hasta que el jugador haga algo.
+        //
         game.width(anchoTotal)
         game.height(altoTotal)
         game.title("6bits RPG - Estable")
@@ -40,14 +43,14 @@ object nivel {
         visuales.oso.initialize()
         visuales.slime.initialize()
         visuales.dragon.initialize()
-       // visuales.rect.initialize() 
+        // visuales.rect.initialize() 
         
         game.addVisual(visuales.mago)
         game.addVisual(visuales.avispa)
         game.addVisual(visuales.oso)
         game.addVisual(visuales.slime)
         game.addVisual(visuales.dragon)
-     //    game.addVisual(visuales.rect) 
+        //game.addVisual(visuales.rect) 
         
         self.configuracionTeclado()
         
@@ -64,7 +67,6 @@ object nivel {
      * (¡VERSIÓN CON MENSAJES RESTAURADA!)
      */
     method configuracionTeclado() {
-        
         // --- Teclas de Movimiento (Sin cambios) ---
         keyboard.w().onPressDo({ self.intentarMover("arriba") })
         keyboard.s().onPressDo({ self.intentarMover("abajo") }) 
@@ -94,13 +96,16 @@ object nivel {
                 // 4. Revisamos la vida RESTANTE para dar el mensaje
                 if (enemigoCercano.vida() == 2) {
                     game.say(visuales.mago, "¡Faltan 2 golpes para matar al enemigo!")
+                    game.sound("punch.wav").play()
                 } 
                 else if (enemigoCercano.vida() == 1) {
                     game.say(visuales.mago, "¡Falta 1, casi lo logras!")
+                    game.sound("punch.wav").play()
                 } 
                 else if (enemigoCercano.vida() <= 0) {
                     // Murió
                     game.say(visuales.mago, "¡Lo lograste, mataste un enemigo!")
+                    game.sound("8_bit_chime_positive.wav").play()
                     
                     // 5. Lo sacamos del juego
                     game.removeVisual(enemigoCercano)
@@ -122,23 +127,34 @@ object nivel {
     // --- Métodos de Fin de Juego ---
     
     method ganaste() {
+        const gano = game.sound("06 - Victory!.wav")
+        musicaDeFondo.stop()
+        gano.volume(0.3)
         game.clear()
-        game.boardGround("ganaste.jpeg")
+        game.addVisual(fondo)//game.boardGround("ganaste.jpeg")
+        gano.play()
+        self.pararMusicaGanadora(gano)
     }
-
+    method pararMusicaGanadora(musica) {game.schedule(5000, {musica.stop()})}
     // --- Métodos de Movimiento del JUGADOR ---
 
     method intentarMover(direccion) {
         var proximaPosicion
+        //const pisadas = game.sound("foley_footstep_concrete_4.wav")
+        //pisadas.volume(0.1)
         
         if (direccion == "arriba") {
             proximaPosicion = visuales.mago.position().up(1)
+            game.sound("foley_footstep_concrete_4.wav").play()
         } else if (direccion == "abajo") {
             proximaPosicion = visuales.mago.position().down(1)
+            game.sound("foley_footstep_concrete_4.wav").play()
         } else if (direccion == "derecha") {
             proximaPosicion = visuales.mago.position().right(1)
+            game.sound("foley_footstep_concrete_4.wav").play()
         } else if (direccion == "izquierda") {
             proximaPosicion = visuales.mago.position().left(1)
+            game.sound("foley_footstep_concrete_4.wav").play()
         }
         
         if (self.esMovimientoValido(proximaPosicion)) {
@@ -265,3 +281,4 @@ object nivel {
         return false // Si no es ninguno
     }
 }
+//musica
