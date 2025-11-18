@@ -10,36 +10,72 @@ class Visual {
 
 // --- Clase Enemigo ACTUALIZADA ---
 class Enemigo inherits Visual {
-	var property vida = 3
-	
-	// --- ¡NUEVO! Métodos de movimiento para enemigos ---
-	// (No cambian la imagen, solo la posición)
-	method subir() { position = position.up(1) }
-	method bajar() { position = position.down(1) }
-	method irADerecha() { position = position.right(1) }
-	method irAIzquierda() { position = position.left(1) }
+    var property vida = 3
+    
+    // Propiedad para guardar el nombre del archivo (ej: "oso", "slime")
+    var property nombreArchivo = "" 
+    
+    // --- Lógica de Imagenes Dinámicas ---
+    // Construye el nombre del archivo sumando el nombreBase + la dirección
+    method mirarAlNorte() { image = nombreArchivo + "Reves.png" }
+    method mirarAlSur()   { image = nombreArchivo + "Frente.png" }
+    method mirarAlEste()  { image = nombreArchivo + "Derecho.png" }
+    method mirarAlOeste() { image = nombreArchivo + "Izquierdo.png" } // ¡Ojo con la I mayúscula!
+    
+    // --- Métodos de movimiento ---
+    // Ahora cambian la imagen Y la posición
+    method subir() { 
+        self.mirarAlNorte()
+        position = position.up(1) 
+    }
+    method bajar() { 
+        self.mirarAlSur()
+        position = position.down(1) 
+    }
+    method irADerecha() { 
+        self.mirarAlEste()
+        position = position.right(1) 
+    }
+    method irAIzquierda() { 
+        self.mirarAlOeste()
+        position = position.left(1) 
+    }
 }
-// --- FIN DE LA ACTUALIZACIÓN ---
+// --- FIN CLASE ENEMIGO ---
 
 
 /**
- * El jugador principal.
- * Hereda de Visual.
+ * El jugador principal (Mago).
  */
 object mago inherits Visual {
     
+    // 💥 CORRECCIÓN CLAVE: Agregamos la propiedad 'direccion'
+    var property direccion = "abajo"
+    
     method initialize() {
         image = "magoFrente.png"
-        position = game.at(3, 2) // Cuadrante 1
+        position = game.at(3, 2) 
     }
     
-    // --- Métodos de Movimiento (Siguen "tontos") ---
+    // --- MÉTODOS DE MIRADA: AHORA ACTUALIZAN 'direccion' ---
+    method mirarAlNorte() { 
+        image = "magoReves.png" 
+        direccion = "arriba"
+    }
+    method mirarAlSur()   { 
+        image = "magoFrente.png" 
+        direccion = "abajo"
+    }
+    method mirarAlEste()  { 
+        image = "magoDerecho.png" 
+        direccion = "derecha"
+    }
+    method mirarAlOeste() { 
+        image = "magoIzquierdo.png" 
+        direccion = "izquierda"
+    } 
     
-    method mirarAlNorte() { image = "magoReves.png" }
-    method mirarAlSur() { image = "magoFrente.png" }
-    method mirarAlEste() { image = "magoDerecho.png" }
-    method mirarAlOeste() { image = "magoIzquierdo.png" } 
-    
+    // --- Métodos de Movimiento ---
     method subir() {
         self.mirarAlNorte()
         position = position.up(1)
@@ -59,27 +95,30 @@ object mago inherits Visual {
 }
 
 /**
- * Enemigos
- * Heredan de Enemigo.
+ * Enemigos (Instancias)
  */
 object avispa inherits Enemigo {
     method initialize() {
+        nombreArchivo = "avispa" // Definimos el prefijo
         image = "avispaDerecho.png"
         position = game.at(4, 4) 
     }
+
+    // ¡EXCEPCIÓN! Como pediste, si mira al norte, usamos la imagen "Derecho"
+    override method mirarAlNorte() { image = "avispaDerecho.png" }
 }
 
 object oso inherits Enemigo {
     method initialize() {
+        nombreArchivo = "oso"
         image = "osoFrente.png" 
         position = game.at(8, 7) 
     }
 }
 
-
-
 object slime inherits Enemigo {
     method initialize() {
+        nombreArchivo = "slime"
         image = "slimeIzquierdo.png"
         position = game.at(14, 6) 
     }
@@ -87,20 +126,10 @@ object slime inherits Enemigo {
 
 object dragon inherits Enemigo {
     method initialize() {
+        nombreArchivo = "dragon"
         image = "dragonIzquierdo.png"
         position = game.at(17, 3) 
     }
 }
 
-// ¡ESTE OBJETO ES INVISIBLE!
 
-/*
-object rect inherits Visual {
-    method initialize() {
-        image = "rect.png"
-        position = game.at(6, 1) 
-    }
-}
-esto es en caso de querer asignar un objeto invisible.
-
-*/

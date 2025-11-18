@@ -18,10 +18,10 @@ object nivel {
     
     // --- Lógica de Progresión ---
     var property enemigosVivos = [
-        visuales.avispa,
-        visuales.oso,
-        visuales.slime,
-        visuales.dragon
+        avispa,
+        oso,
+        slime,
+        dragon
     ]
 
     /**
@@ -38,27 +38,27 @@ object nivel {
         game.boardGround("escenario.png")
         
         // Inicializa y añade todos los visuales
-        visuales.mago.initialize()
-        visuales.avispa.initialize()
-        visuales.oso.initialize()
-        visuales.slime.initialize()
-        visuales.dragon.initialize()
+        mago.initialize()
+        avispa.initialize()
+        oso.initialize()
+        slime.initialize()
+        dragon.initialize()
         // visuales.rect.initialize() 
         
-        game.addVisual(visuales.mago)
-        game.addVisual(visuales.avispa)
-        game.addVisual(visuales.oso)
-        game.addVisual(visuales.slime)
-        game.addVisual(visuales.dragon)
+        game.addVisual(mago)
+        game.addVisual(avispa)
+        game.addVisual(oso)
+        game.addVisual(slime)
+        game.addVisual(dragon)
         //game.addVisual(visuales.rect) 
         
         self.configuracionTeclado()
         
         // --- MOVIMIENTO ALEATORIO DE ENEMIGOS ---
-        game.onTick(500.randomUpTo(800), "mov_avispa", { self.moverEnemigoAleatorio(visuales.avispa) })
-        game.onTick(500.randomUpTo(800), "mov_oso", { self.moverEnemigoAleatorio(visuales.oso) })
-        game.onTick(500.randomUpTo(800), "mov_slime", { self.moverEnemigoAleatorio(visuales.slime) })
-        game.onTick(500.randomUpTo(800), "mov_dragon", { self.moverEnemigoAleatorio(visuales.dragon) })
+        game.onTick(500.randomUpTo(800), "mov_avispa", { self.moverEnemigoAleatorio(avispa) })
+        game.onTick(500.randomUpTo(800), "mov_oso", { self.moverEnemigoAleatorio(oso) })
+        game.onTick(500.randomUpTo(800), "mov_slime", { self.moverEnemigoAleatorio(slime) })
+        game.onTick(500.randomUpTo(800), "mov_dragon", { self.moverEnemigoAleatorio(dragon) })
     }
     
     
@@ -66,7 +66,8 @@ object nivel {
      * Configura las teclas WASD para mover al mago.
      * (¡VERSIÓN CON MENSAJES RESTAURADA!)
      */
-    method configuracionTeclado() {
+   method configuracionTeclado() {
+        
         // --- Teclas de Movimiento (Sin cambios) ---
         keyboard.w().onPressDo({ self.intentarMover("arriba") })
         keyboard.s().onPressDo({ self.intentarMover("abajo") }) 
@@ -74,37 +75,54 @@ object nivel {
         keyboard.a().onPressDo({ self.intentarMover("izquierda") })
         
         
-        // --- ¡LÓGICA DE TECLA "F" CON MENSAJES RESTAURADA! ---
+        // --- LÓGICA DE TECLA "F" (ATAQUE DIRECCIONAL CORREGIDO) ---
         keyboard.f().onPressDo({
             
-            // 1. Buscamos SI HAY *ALGÚN* enemigo cerca
-            const magoPos = visuales.mago.position()
-            const enemigoCercano = enemigosVivos.find({ enemigo =>
-                const enemigoPos = enemigo.position()
-                const distanciaX = (magoPos.x() - enemigoPos.x()).abs()
-                const distanciaY = (magoPos.y() - enemigoPos.y()).abs()
-                
-                return (distanciaX <= 1 and distanciaY <= 1)
+            // 1. Calculamos DÓNDE va a pegar el mago
+            var posicionDeAtaque = mago.position()
+            
+            // 💥 FIX: Estructura de IF/ELSE IF para calcular la posición de ataque
+            if (mago.direccion() == "arriba") { 
+                posicionDeAtaque = posicionDeAtaque.up(1) 
+            } 
+             if (mago.direccion() == "abajo" ){ 
+                posicionDeAtaque = posicionDeAtaque.down(1) 
+            } 
+             if (mago.direccion() == "derecha" ){ 
+                posicionDeAtaque = posicionDeAtaque.right(1) 
+            } 
+            else  (mago.direccion() == "izquierda" ){ 
+                posicionDeAtaque = posicionDeAtaque.left(1) 
+            }
+            
+            // 2. Buscamos si hay un enemigo EXACTAMENTE en esa posición (Direccional)
+            const enemigoCercano = enemigosVivos.find({ enemigo => 
+                enemigo.position() == posicionDeAtaque 
             })
             
-            // 2. Verificamos si encontramos a alguien
+            // 3. Si encontramos a alguien, le pegamos
             if (enemigoCercano != null) {
+                
+                // Si la explosión está activa, puedes descomentar la llamada aquí:
+                // visualAtaque.position(posicionDeAtaque)
+                // game.addVisual(visualAtaque)
+                // game.schedule(500, { game.removeVisual(visualAtaque) }) 
                 
                 // 3. ¡Lo golpeamos! (Restamos vida)
                 enemigoCercano.vida(enemigoCercano.vida() - 1)
                 
                 // 4. Revisamos la vida RESTANTE para dar el mensaje
                 if (enemigoCercano.vida() == 2) {
-                    game.say(visuales.mago, "¡Faltan 2 golpes para matar al enemigo!")
+                    game.say(mago, "¡Faltan 2 golpes para matar al enemigo!")
                     game.sound("punch.wav").play()
                 } 
                 else if (enemigoCercano.vida() == 1) {
-                    game.say(visuales.mago, "¡Falta 1, casi lo logras!")
+                    game.say(mago, "¡Falta 1, casi lo logras!")
                     game.sound("punch.wav").play()
                 } 
                 else if (enemigoCercano.vida() <= 0) {
                     // Murió
-                    game.say(visuales.mago, "¡Lo lograste, mataste un enemigo!")
+                    game.say(mago, "¡Lo lograste, mataste un enemigo!")
                     game.sound("8_bit_chime_positive.wav").play()
                     
                     // 5. Lo sacamos del juego
@@ -118,8 +136,8 @@ object nivel {
                 }
                 
             } else {
-                // 4. No hay nadie cerca
-                game.say(visuales.mago, "¡Tienes que pegarle al siguiente enemigo!")
+                // 4. No hay nadie en la casilla de enfrente
+                game.say(mago, "¡No hay nadie ahí!")
             }
         })
     }
@@ -144,29 +162,29 @@ object nivel {
         //pisadas.volume(0.1)
         
         if (direccion == "arriba") {
-            proximaPosicion = visuales.mago.position().up(1)
+            proximaPosicion = mago.position().up(1)
             game.sound("foley_footstep_concrete_4.wav").play()
         } else if (direccion == "abajo") {
-            proximaPosicion = visuales.mago.position().down(1)
+            proximaPosicion = mago.position().down(1)
             game.sound("foley_footstep_concrete_4.wav").play()
         } else if (direccion == "derecha") {
-            proximaPosicion = visuales.mago.position().right(1)
+            proximaPosicion = mago.position().right(1)
             game.sound("foley_footstep_concrete_4.wav").play()
         } else if (direccion == "izquierda") {
-            proximaPosicion = visuales.mago.position().left(1)
+            proximaPosicion = mago.position().left(1)
             game.sound("foley_footstep_concrete_4.wav").play()
         }
         
         if (self.esMovimientoValido(proximaPosicion)) {
-            if (direccion == "arriba") { visuales.mago.subir() }
-            else if (direccion == "abajo") { visuales.mago.bajar() }
-            else if (direccion == "derecha") { visuales.mago.irADerecha() }
-            else if (direccion == "izquierda") { visuales.mago.irAIzquierda() }
+            if (direccion == "arriba") { mago.subir() }
+            else if (direccion == "abajo") { mago.bajar() }
+            else if (direccion == "derecha") { mago.irADerecha() }
+            else if (direccion == "izquierda") { mago.irAIzquierda() }
         } else {
-            if (direccion == "arriba") { visuales.mago.mirarAlNorte() }
-            else if (direccion == "abajo") { visuales.mago.mirarAlSur() }
-            else if (direccion == "derecha") { visuales.mago.mirarAlEste() }
-            else if (direccion == "izquierda") { visuales.mago.mirarAlOeste() }
+            if (direccion == "arriba") { mago.mirarAlNorte() }
+            else if (direccion == "abajo") { mago.mirarAlSur() }
+            else if (direccion == "derecha") { mago.mirarAlEste() }
+            else if (direccion == "izquierda") { mago.mirarAlOeste() }
         }
     }
     
@@ -243,7 +261,7 @@ object nivel {
     method esMovimientoValidoParaEnemigo(enemigo, posicion) {
         return self.esPosicionCaminableParaEnemigo(enemigo, posicion) and
                self.noHayEnemigoVivoAhi(posicion) and
-               posicion != visuales.mago.position()
+               posicion != mago.position()
     }
 
     /**
@@ -265,20 +283,19 @@ object nivel {
         
         // ¡Importante! Los enemigos solo se mueven DENTRO de su cuadrante.
         
-        if (enemigo == visuales.avispa) { 
+        if (enemigo == avispa) { 
             return enC1
         } 
-        else if (enemigo == visuales.oso) { 
+        else if (enemigo == oso) { 
             return enC2
         }
-        else if (enemigo == visuales.slime) {
+        else if (enemigo == slime) {
             return enC3
         }
-        else  (enemigo == visuales.dragon) { // <-- ¡TU CORRECCIÓN!
+        else  (enemigo == dragon) { // <-- ¡TU CORRECCIÓN!
             return enC4
         }
         
         return false // Si no es ninguno
     }
 }
-//musica
