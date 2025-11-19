@@ -24,6 +24,14 @@ object nivel {
         game.onTick(500.randomUpTo(800), "movimientos", { self.movimientosEnemigos() })
     }
     method movimientosEnemigos() { enemigosVivos.forEach({ e => e.realizarTurno() }) }
+    method activarComportamientoDeEnemigos() { //#F este metodo enciende el comportamiento de los enemigos
+        // movimientos aleatorios de los enemigos
+        game.onTick(500.randomUpTo(800), "movimientos", { self.movimientosEnemigos() })
+    }
+
+    method desactivarComportamientoDeEnemigos(){ //#F este metodo desactiva el comportamiento de los enemigos
+        game.removeTickEvent("movimientos")
+    }
     method configuracionTeclado() {
         keyboard.w().onPressDo({ mago.moverA(arriba) })
         keyboard.s().onPressDo({ mago.moverA(abajo) }) 
