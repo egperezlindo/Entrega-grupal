@@ -1,0 +1,19 @@
+import nivel.*
+import mago.*
+import visuales.*
+import dificultades.*
+
+describe "Testeos movimientos" {
+  test "Mago en su posicion inicial puede moverse hacia abajo en su posicion inicial" {
+    assert.that(mago.puedeMoverseA(mago.direccion().siguiente(mago.position())))
+  }
+  test "Oso en su posicion inicial puede moverse hacia abajo en su posicion inicial" {
+    assert.that(oso.puedeMoverseA(oso.direccion().siguiente(oso.position())))
+  }
+   test "Slime en su posicion inicial no puede moverse hacia abajo en su posicion inicial" {
+    assert.notThat(slime.puedeMoverseA(slime.direccion().siguiente(slime.position())))
+  }
+  test "Avispa en su posicion inicial puede moverse hacia abajo en su posicion inicial" {
+    assert.that(avispa.puedeMoverseA(avispa.direccion().siguiente(avispa.position())))
+  }
+}

@@ -9,7 +9,7 @@ program wollokDungeons {
     game.height(10)
     game.title("Wollok Dungeons")
     game.cellSize(50) 
-    game.boardGround("tableroNuevoGame.jpeg")// unica manera que encontré para que instanciara el tablero :p
-    menuInicio.abrir() // #F El juego comienza con el menu inicial (revisar archivo menus.wlk)
+    game.boardGround("tableroNuevoGame.jpeg")
+    menuInicio.abrir()
     game.start()
 }

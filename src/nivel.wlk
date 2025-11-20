@@ -1,62 +1,54 @@
 import wollok.game.*
-import visuales.* // Importa a los "actores"
+import visuales.*
 import mago.*
-import movimientos.* // son los movimientos para el mago :p
-import musica.* // importa obj musicaDeFondo
-import menus.* // importa menus (pausa, inicio, ganador, perdedor)
+import movimientos.*
+import musica.* 
+import menus.* 
+import dificultades.*
 
 object nivel {
-    const property enemigosVivos = [avispa, oso, slime, dragon] // resuelto el problema del menuGanador (var => const)
+    var property dificultad = normal
+    var property enemigosVivos = [avispa, oso, slime, dragon] 
     var property juegoIniciado = false
 
-    method iniciarJuego() { 
-        if(!juegoIniciado) {
-        juegoIniciado = true
-        musicaDeFondo.play()
-        game.addVisual(mago)
-        game.addVisual(avispa)
-        game.addVisual(oso)
-        game.addVisual(slime)
-        game.addVisual(dragon)
-        self.configuracionTeclado()
-        self.activarComportamientoDeEnemigos() // #F nucleo el comportamiento de los enemigos en metodos, la idea es activar/desactivar en un futuro menú de pausa
-        }
-    }
-    method iniciarJuegoReiniciado() { //#F
-        if(!juegoIniciado) {
-        juegoIniciado = true
-        //musicaDeFondo.play()
-        game.addVisual(mago)
-        game.addVisual(avispa)
-        game.addVisual(oso)
-        game.addVisual(slime)
-        game.addVisual(dragon)
-        mago.resetearPosicion()
-        avispa.estadoInicial()
-        oso.estadoInicial()
-        slime.estadoInicial()
-        dragon.estadoInicial()
-        self.configuracionTeclado()
-        self.activarComportamientoDeEnemigos() // #F nucleo el comportamiento de los enemigos en metodos, la idea es activar/desactivar en un futuro menú de pausa
-        }
-    }
+
+    var teclasConfiguradas = false
+
     
-    method movimientosAleatoriosEnemigos() { enemigosVivos.forEach({ e => e.moverAleatorio() }) }
+ method iniciarJuego() { 
+        if(!juegoIniciado) {
+            juegoIniciado = true
+            musicaDeFondo.play() 
+            
+            game.addVisual(mago)
+            game.addVisual(avispa)
+            game.addVisual(oso)
+            game.addVisual(slime)
+            game.addVisual(dragon)
+            
+            if (!teclasConfiguradas) {
+                self.configuracionTeclado()
+                teclasConfiguradas = true
+            }
+            // -----------------------
+
+            self.activarComportamientoDeEnemigos() 
+        } 
+    }
+    method movimientosAleatoriosEnemigos() { enemigosVivos.forEach({ e => e.realizarTurno() }) }
     method configuracionTeclado() {
         keyboard.w().onPressDo({ mago.moverA(arriba) })
         keyboard.s().onPressDo({ mago.moverA(abajo) }) 
         keyboard.d().onPressDo({ mago.moverA(derecha) })
         keyboard.a().onPressDo({ mago.moverA(izquierda) })
         keyboard.f().onPressDo({ mago.atacar() })
-        
-        keyboard.p().onPressDo({ menuPausa.abrir()} ) //#F revisar menus.wlk
+        keyboard.p().onPressDo({ menuPausa.abrir()} )
     }
-    method activarComportamientoDeEnemigos() { //#F este metodo enciende el comportamiento de los enemigos
-        // movimientos aleatorios de los enemigos
+    method activarComportamientoDeEnemigos() { 
         game.onTick(500.randomUpTo(800), "movimientos", { self.movimientosAleatoriosEnemigos() })
     }
 
-    method desactivarComportamientoDeEnemigos(){ //#F este metodo desactiva el comportamiento de los enemigos
+    method desactivarComportamientoDeEnemigos(){ 
         game.removeTickEvent("movimientos")
     }
 
@@ -64,36 +56,81 @@ object nivel {
         menuGanador.abrir()
     }
     method perdiste() {
-        game.clear()
         menuPerdedor.abrir()
     }
-    method reinicio(){ //#F
-        if(juegoIniciado){
-        juegoIniciado = false
-        //musicaDeFondo.stop()
-        menuInicio.reinicio()
-        game.removeVisual(fondoPausa)
-        game.removeVisual(mago)
-        game.removeVisual(avispa)
-        game.removeVisual(oso)
-        game.removeVisual(slime)
-        game.removeVisual(dragon)
-        
-        menuInicio.abrirReiniciado()
-        }
-    }
-
-    method allelements(){
-        
-    }
-
     method enemigoDerrotado(enemigo) {
-        game.removeVisual(enemigo) // hay q ver lo de la animacion cuando mueren
+        game.removeVisual(enemigo)
         enemigosVivos.remove(enemigo)
         if (enemigosVivos.isEmpty()) {
             self.ganaste()
         }
     }
+    method magoDerrotado() {
+        mago.desactivarMovimiento()
+        self.desactivarComportamientoDeEnemigos()
+        
+
+        self.perdiste()
+    }
     method noHayEnemigoVivoAhi(posicion) = !(enemigosVivos.map({e => e.position()})).contains(posicion)
-    
+    method reiniciar() {
+        if(juegoIniciado) {
+            game.removeVisual(fondoPausa)
+            game.removeVisual(mago)
+            game.removeVisual(avispa)
+            game.removeVisual(oso)
+            game.removeVisual(slime)
+            game.removeVisual(dragon)
+
+            juegoIniciado = false
+
+
+            musicaDeFondo.stop()
+
+            mago.curarse(mago.vidaTotal())
+            avispa.curarse(avispa.vidaTotal())
+            oso.curarse(oso.vidaTotal())
+            slime.curarse(slime.vidaTotal())
+            dragon.curarse(dragon.vidaTotal())
+
+            self.iniciarJuego()
+        }
+    }
+
+    method reiniciarDespuesDeMuerte() {
+        juegoIniciado = false
+        musicaDeFondo.stop()
+
+        mago.curarse(mago.vidaTotal())
+        avispa.curarse(avispa.vidaTotal())
+        oso.curarse(oso.vidaTotal())
+        slime.curarse(slime.vidaTotal())
+        dragon.curarse(dragon.vidaTotal())
+        
+        self.iniciarJuego()
+    }
+
+    method volverAlMenu() {
+        if (game.hasVisual(mago)) game.removeVisual(mago)
+        if (game.hasVisual(avispa)) game.removeVisual(avispa)
+        if (game.hasVisual(oso)) game.removeVisual(oso)
+        if (game.hasVisual(slime)) game.removeVisual(slime)
+        if (game.hasVisual(dragon)) game.removeVisual(dragon)
+
+        juegoIniciado = false
+        musicaDeFondo.stop()
+
+        enemigosVivos = [avispa, oso, slime, dragon]
+
+        mago.curarse(mago.vidaTotal())
+        mago.resetearPosicion()
+        mago.activarMovimiento()
+        
+        avispa.curarse(avispa.vidaTotal())
+        oso.curarse(oso.vidaTotal())
+        slime.curarse(slime.vidaTotal())
+        dragon.curarse(dragon.vidaTotal())
+
+        menuInicio.abrir()
+    }
 }

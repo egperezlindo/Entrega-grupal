@@ -4,79 +4,45 @@ import visuales.*
 import nivel.*
 import mago.*
 
-
-
 class Menu inherits Visual (position = game.origin()) {
     method abrir()
-    method abrirReiniciado() {}
-    method cerrarReiniciado() {}
     method cerrar()
     method configuracionTeclado()
 }
-object menuInicio inherits Menu (image = "Menu_resized.png") { //#F
-    var property menuInicioAbierto = false //#F
-    var juegoReiniciado = false
+object menuInicio inherits Menu (image = "Menu_resized.png") { 
+    var property menuInicioAbierto = false 
 
-    override method abrir() { //#F Cuando ejecutas el game, el juego se queda en este metodo, esperando la tecla J para iniciar (la tecla J llama a self.cerrar())
-        if(!juegoReiniciado) {
-            menuInicioAbierto = true
-
-            game.addVisual(fondoIni)//game.boardGround("Menu_resized.png") //#F de boardGround utilizo la imagen del menu
-            keyboard.j().onPressDo({ self.cerrar() })
-        }
-        else{
-            menuInicioAbierto = true
-
-            keyboard.j().onPressDo({ self.cerrarReiniciado()})
-        }
-        
+    override method abrir() { 
+        game.addVisual(fondoIni)
+        keyboard.j().onPressDo({ self.cerrar() })
     }
-    override method cerrarReiniciado() {
+    override method configuracionTeclado() {}
+    override method cerrar() {
         menuInicioAbierto = false
 
         game.removeVisual(fondoIni)
-    }
-    override method configuracionTeclado() {}
-    method reinicio() {juegoReiniciado = true}
-    override method cerrar() { //#F
-        if(!juegoReiniciado){
-            menuInicioAbierto = false
-
-            game.removeVisual(fondoIni)//game.clear() //#F utiliza el game.clear() para intentar remover la imagen del menu pero no la elimina (revisar)
-            nivel.iniciarJuego() //#F metodo iniciarJuego() en nivel.wlk
-        }else{
-            menuInicioAbierto = false
-            juegoReiniciado = false
-
-            game.removeVisual(fondoIni)
-            nivel.iniciarJuegoReiniciado()
-        }
-        
-
-        
+        nivel.iniciarJuego() 
     }
 }
 
 object menuPausa inherits Menu (image = "pausa.jpeg") {
-    var property menuPausaAbierto = false //#F
-    override method abrir() { // #F falta agregar la imagen del menu de pausa y desactivar movimiento del mago
+    var property menuPausaAbierto = false 
+    override method abrir() { 
         if(!menuPausaAbierto) {
             menuPausaAbierto = true
             mago.desactivarMovimiento()
-            nivel.desactivarComportamientoDeEnemigos() // #F desactiva el movimiento de los enemigos
-            musicaDeFondo.pausar()
+            nivel.desactivarComportamientoDeEnemigos()
             game.addVisual(fondoPausa)
             keyboard.p().onPressDo({self.abrir()})
-            //keyboard.m().onPressDo({menuInicio.abrir()})
         }
         else{
             menuPausaAbierto = false
             mago.activarMovimiento()
-            nivel.activarComportamientoDeEnemigos() // #F activa el movimiento de los enemigos
+            nivel.activarComportamientoDeEnemigos()
             game.removeVisual(fondoPausa)
             musicaDeFondo.reanudar()
             keyboard.p().onPressDo({self.cerrar()})
-            keyboard.r().onPressDo({nivel.reinicio()})
+            keyboard.r().onPressDo({nivel.reiniciar()})
         }  
         
     }
@@ -84,8 +50,7 @@ object menuPausa inherits Menu (image = "pausa.jpeg") {
     override method configuracionTeclado() {}
 }
 
-// resuelto el problema del menuGanador no displayeado; ver resolucion en archivo niveles => obj nivel => lista
-object menuGanador inherits Menu (image = "ganaste.jpeg") {
+object menuGanador inherits Menu (image = "menuWin.png") {
     override method abrir() {
         game.clear()
         const gano = game.sound("06 - Victory!.wav")
@@ -100,21 +65,41 @@ object menuGanador inherits Menu (image = "ganaste.jpeg") {
     method pararMusicaGanadora(musica) {game.schedule(5000, {musica.stop()})}
 }
 
-object menuPerdedor inherits Menu (image = "perdiste.jpeg") {
-    override method abrir() {}
-    override method cerrar() {}
+object menuPerdedor inherits Menu (image = "menuReiniciar.png") {
+    
+    method initialize() {
+        position = game.at(6, 4) 
+    }
+
+    override method abrir() {
+        musicaDeFondo.stop()
+        game.addVisual(self)
+        keyboard.r().onPressDo({ self.reiniciarDesdeMenu() })
+    }
+
+    method reiniciarDesdeMenu() {
+        game.removeVisual(self)
+        nivel.volverAlMenu() 
+    }
+    
+    override method cerrar() {} 
     override method configuracionTeclado() {}
 }
 
-object fondoIni { //objeto de fondo de inicio
+object fondoIni {
     method image() = "Menu_resized.png"
-    const property position = game.at(0,0)
+    const property position = game.at(1,0)
 }
-object fondoGano { //objeto de fondo de gano
-    method image() = "ganaste.jpeg"
-    const property position = game.at(0,0)
+object fondoGano {
+    method image() = "menuWin.png"
+    const property position = game.at(5,3)
 }
-object fondoPausa { //objeto de fondo de pausa
+object fondoPausa {
     method image() = "menuPausaTrans.png"
+    const property position = game.at(3,2)
+}
+
+object fondoPerdio {
+    method image() = "perdiste.jpeg"
     const property position = game.at(0,0)
 }
