@@ -2,12 +2,14 @@ import wollok.game.*
 import visuales.*
 import nivel.*
 import musica.*
+import menus.*
 
 program wollokDungeons {
     game.width(20)
-    game.height(12)
+    game.height(10)
     game.title("Wollok Dungeons")
     game.cellSize(50) 
-    nivel.iniciarJuego() // tendría que estar abrir() del menu de inicio :)
+    game.boardGround("tableroNuevoGame.jpeg")// unica manera que encontré para que instanciara el tablero :p
+    menuInicio.abrir() // #F El juego comienza con el menu inicial (revisar archivo menus.wlk)
     game.start()
 }
