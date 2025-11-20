@@ -1,0 +1,52 @@
+Ultima actualizacion: Jueves 03:02 AM
+    Se esta trabajando sobre el metodo reinicio()
+
+game.wlk:
+    El juego inicia en "Menu de inicio"
+    Se le modificó la imagen del boardground
+
+menus.wlk
+    Se añadio archivo Menus:
+        Menu de inicio implementado:
+            El juego ahora inicia con el Menu de inicio:
+                Se implemento validación del menu de inicio (esta abierto o cerrado)
+                Se implementó una imagen
+                Se implementó la tecla J para iniciar el juego
+                Metodo abrir:
+                    Modifica el estado del menu = true
+                    Coloca imagen del menú
+                    Tecla j para abrir metodo cerrar
+                Metodo cerrar:
+                    Modifica el estado del menu = false
+                    Remueve la imagen e inicia el juego
+            
+            //Falta implementar las dificultades
+    
+        Menu de pausa implementado:
+            Se agrega validación de estado (pausado/en línea)
+            Metodo abrir:
+                #Ahora se deshabilita/habilita los controles de movimiento del mago:
+                Se deshabilita/habilita el comportamiento de los enemigos
+                #Se pausa/reanuda la musica del juego
+                Se implementó una imagen (se superpone)
+                Tecla P para pausar/reanudar
+            Metodo cerrar:
+                Alterna los metodos de abrir
+            
+            //falta reiniciar juego con tecla r
+            
+            
+        Menu Ganador
+        Menu Perdedor
+
+movimientos.wlk
+
+musica.wlk
+    Se añadieron metodos pausar musica y reanudar musica
+
+nivel.wlk
+    Se agrega el comportamiento de los enemigos como un metodo en iniciarJuego, para controlarlos mejor
+    Se implementa la tecla P de pausa (abre el menu de pausa)
+
+    Metodo activar/desactivar comportamiento de enemigos:
+        setea game.onTick y en otro metodo lo Remueve
