@@ -1,7 +1,7 @@
 import wollok.game.*
 import movimientos.*
-import nivel.*
-import mago.*
+import menus.*
+import config.*
 
 class Visual {
     var property image
@@ -9,153 +9,183 @@ class Visual {
 }
 
 class Personaje inherits Visual {
-    var property vida
-    var property daño
+    var property vidas = 3
     var property direccion = abajo
-    method vidaTotal()
-    method puedeMoverseA(pos)
-    method atacar()
-    method recibirDaño(enemigo) { vida = (vida - enemigo.daño()).max(0) }
-    method curarse(cantidad) {self.vida(vida + cantidad)}
+    var property proyectil
+    method puedeMoverseA(pos) = 
+        pos.x() >= 0 &&
+        pos.y() >= 0 &&
+        pos.x() < game.width() &&
+        pos.y() < game.height()
+    method atacarA(personaje) {
+        personaje.perderVida(self)
+        game.sound("punch.wav").play() // cambiar
+    }
+    method perderVida(personaje) { vidas = (vidas - 1).max(0) }
+    method mirarA(unaDireccion) {
+        if(self.puedeMoverseA(unaDireccion)) { 
+            direccion = unaDireccion
+        }
+    }
+    method moverA(unaDireccion) {
+        self.mirarA(unaDireccion)
+        if (self.puedeMoverseA(unaDireccion.siguiente(self.position()))) {
+            self.position(unaDireccion.siguiente(self.position()))
+        }
+    }
+    method resetearPosicion()
+    method resetear() { self.initialize() } // cheq
+    method estaMuerto() = vidas == 0
+}
+
+class Proyectil inherits Visual (position = personaje.direccion().siguiente(personaje.position())) {
+    var property personaje
+    method serLanzado(haciaPersonaje) {
+        game.addVisual(self)
+        self.moverseRecto()
+        self.colisionar(haciaPersonaje)
+    }
+    method moverseRecto() {
+        self.position(personaje.direccion().siguiente(self.position()))
+        if (position.x() > game.width() or position.y() > game.height()) {
+            game.removeVisual(self)
+        }
+    }
+    method colisionar(unPersonaje) {
+        game.whenCollideDo(self, {
+            unPersonaje.perderVida()
+            unPersonaje.resetearPosicion()
+        })
+    }
+}
+
+object mago inherits Personaje (proyectil = proyectilMago) {
+    var property enemigo = juegoPorNiveles.nivelActual().enemigo()
+    method posicionDeAtaque() = direccion.siguiente(self.position())
+    override method mirarA(unaDireccion) {
+        if(self.puedeMoverseA(unaDireccion)) { 
+            super(unaDireccion)
+            image = unaDireccion.imageMago()
+        }
+    }
+    method configuracionTeclado() {
+        if (!menuPausa.menuPausaAbierto()) {
+            keyboard.w().onPressDo({self.moverA(arriba)})
+            keyboard.s().onPressDo({self.moverA(abajo)})
+            keyboard.d().onPressDo({self.moverA(derecha)})
+            keyboard.a().onPressDo({self.moverA(izquierda)})
+            keyboard.f().onPressDo({self.atacarA(enemigo)})
+        }
+    }
+    override method resetearPosicion() {
+        position = game.at(3,2) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
+    }
+    method initialize() {
+        image = direccion.imageMago()
+        position = game.at(3, 2) 
+        vidas = 3
+    }
+}
+
+object proyectilMago inherits Proyectil (personaje = mago, image = "completar") {
+    override method serLanzado(haciaPersonaje) {
+        super(haciaPersonaje)
+        game.onTick(1500, "proyectilMago", {self.moverseRecto()})
+    }
 }
 
 class Enemigo inherits Personaje {
-    var property cuadranteMinX // tendrian q ser const
-    var property cuadranteMaxX
-    var property cuadranteMinY
-    var property cuadranteMaxY
-    method estaEnSuCuadrante(pos) =
-        pos.x() >= cuadranteMinX and
-        pos.x() <= cuadranteMaxX and
-        pos.y() >= cuadranteMinY and
-        pos.y() <= cuadranteMaxY
-    method realizarTurno() {
-        if (self.estaCercaDelMago()) { self.atacar() }
-        else if (self.necesitaCurarse()) { self.curarse(10) }
-        else { self.moverseEnDireccionAlMago() }
-    }
-    method magoEnSuCuadrante() =
-        mago.position().x() >= cuadranteMinX and
-        mago.position().x() <= cuadranteMaxX and
-        mago.position().y() >= cuadranteMinY and
-        mago.position().y() <= cuadranteMaxY
-    method moverseEnDireccionAlMago() {
-    const difX = mago.position().x() - position.x()
-    const difY = mago.position().y() - position.y()
-    if (difX.abs() > difY.abs()) {
-        if (difX > 0) { self.moverseALaDerecha() } 
-        else { self.moverseALaIzquierda() }
-    } 
-    else {
-        if (difY > 0) { self.moverseAlNorte() } 
-        else {self.moverseAlSur() }
-        }
-    }
-    method estaCercaDelMago() = self.position().distance(mago.position()) <= 1
-    method necesitaCurarse() = vida < 100
-    method moverseAlNorte() {
-        direccion = arriba
-        if (self.puedeMoverseA(arriba.siguiente(self.position()))) {
-            self.position(arriba.siguiente(self.position()))
-        }
-    }
-    method moverseAlSur() {
-        direccion = abajo
-        if (self.puedeMoverseA(abajo.siguiente(self.position()))) {
-            self.position(abajo.siguiente(self.position()))
-        }
-    }
-    method moverseALaDerecha() {
-        direccion = derecha
-        if (self.puedeMoverseA(derecha.siguiente(self.position()))) {
-            self.position(derecha.siguiente(self.position()))
-        }
-    }
-    method moverseALaIzquierda() {
-        direccion = izquierda
-        if (self.puedeMoverseA(izquierda.siguiente(self.position()))) {
-            self.position(izquierda.siguiente(self.position()))
-        }
-    }
-    override method atacar() {
-        mago.recibirDaño(self)
-        game.sound("punch.wav").play()
-    }
-
-    override method puedeMoverseA(pos) =
-        self.estaEnSuCuadrante(pos) and
-        nivel.noHayEnemigoVivoAhi(pos) and
-        pos != mago.position()
+    method comboEnemigo(unaDireccion)
+    method moverseEnemigo() { self.atacarA(mago) }
 }
 
-object avispa inherits Enemigo {
-    override method vidaTotal() = 40
-    override method moverseAlNorte() { image = "avispaFrente.png" super() }
-    override method moverseAlSur() { image = "avispaFrente.png" super() }
-    override method moverseALaIzquierda() { image = "avispaIzquierdo.png" super() }
-    override method moverseALaDerecha() { image = "avispaDerecho.png" super() }
+object avispa inherits Enemigo (proyectil = proyectilAvispa) {
+    override method comboEnemigo(unaDireccion) { game.onTick(1500, "comboAvispa", {self.moverseEnemigo()}) }
+    override method moverseEnemigo() {
+        super()
+        if (position.x() == 3) { self.moverA(derecha) } // este método puede mejorarse
+        if (position.x() == 17) { self.moverA(izquierda) }
+    }
+    override method puedeMoverseA(pos) = 
+        pos.x() >= 3 &&
+        pos.y() >= 3 &&
+        pos.x() <= 17 &&
+        pos.y() <= 17
+    override method atacarA(personaje) {
+        proyectil.serLanzado()
+        game.sound("punch.wav").play() // cambiar sonido 
+    }
+    override method resetearPosicion() {
+        position = game.at(10, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
+        // puede tener la clase personaje una posicion inicial para ahorrarnos esto!
+    }
     method initialize() {
-        image = "avispaDerecho.png"
-        position = game.at(4,4)
-        vida = nivel.dificultad().vidaEnemigo(self.vidaTotal())
-        daño = nivel.dificultad().dañoEnemigo(5)
-        cuadranteMinX = 2
-        cuadranteMaxX = 8
-        cuadranteMinY = 1
-        cuadranteMaxY = 4
+        image = "avispaFrente.png" // nunca se le actualiza la imagen a otra que no sea su reves porque solo se mueve de forma horizontal
+        position = game.at(10, 17)
     }
 }
 
-object oso inherits Enemigo {
-    override method vidaTotal() = 60
-    override method moverseAlNorte() { image = "osoFrente.png" super() }
-    override method moverseAlSur() { image = "osoFrente.png" super() }
-    override method moverseALaIzquierda() { image = "osoIzquierdo.png" super() }
-    override method moverseALaDerecha() { image = "osoDerecho.png" super() }
-    method initialize() {
-        image = "osoFrente.png" 
-        position = game.at(8, 7) 
-        vida = nivel.dificultad().vidaEnemigo(self.vidaTotal())
-        daño = nivel.dificultad().dañoEnemigo(10)
-        cuadranteMinX = 2
-        cuadranteMaxX = 8
-        cuadranteMinY = 6
-        cuadranteMaxY = 8
+object proyectilAvispa inherits Proyectil (personaje = mago, image = "completar") {
+    override method serLanzado(haciaPersonaje) {
+        super(haciaPersonaje)
+        game.onTick(1500, "proyectilAvispa", {self.moverseRecto()})
     }
 }
 
-object slime inherits Enemigo {
-    override method vidaTotal() = 80
-    override method moverseAlNorte() { image = "slimeFrente.png" super() }
-    override method moverseAlSur() { image = "slimeFrente.png" super() }
-    override method moverseALaIzquierda() { image = "slimeIzquierdo.png" super() }
-    override method moverseALaDerecha() { image = "slimeDerecho.png" super() }
+object slime inherits Enemigo (proyectil = proyectilSlime) {
+    override method comboEnemigo(unaDireccion) { game.onTick(1000, "comboSlime", {self.moverseEnemigo()})}
+    override method moverseEnemigo() {
+        super()
+        // pensar en resolver este método. que se mueva por los bordes. (vertical y horizontalmente) EL SUPER YA HACE QUE ATAQUE
+    }
+    override method mirarA(unaDireccion) {
+        if(self.puedeMoverseA(unaDireccion)) { 
+            super(unaDireccion)
+            image = unaDireccion.imageSlime()
+        }
+    }
+    override method resetearPosicion() {
+        position = game.at(10,17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
+    }
     method initialize() {
         image = "slimeIzquierdo.png"
-        position = game.at(14, 6)
-        vida = nivel.dificultad().vidaEnemigo(self.vidaTotal())
-        daño = nivel.dificultad().dañoEnemigo(15)
-        cuadranteMinX = 11
-        cuadranteMaxX = 17
-        cuadranteMinY = 6
-        cuadranteMaxY = 8
+        position = game.at(10, 17)
+        vidas = 4
     }
 }
 
-object dragon inherits Enemigo {
-    override method vidaTotal() = 100
-    override method moverseAlNorte() { image = "dragonFrente.png" super() }
-    override method moverseAlSur() { image = "dragonFrente.png" super() }
-    override method moverseALaIzquierda() { image = "dragonIzquierdo.png" super() }
-    override method moverseALaDerecha() { image = "dragonDerecho.png" super() }
+object proyectilSlime inherits Proyectil (personaje = mago, image = "completar") {
+    override method serLanzado(haciaPersonaje) {
+        super(haciaPersonaje)
+        game.onTick(1000, "proyectilSlime", {self.moverseRecto()}) // 
+    }
+}
+
+object dragon inherits Enemigo (proyectil = proyectilDragon) {
+    override method comboEnemigo(unaDireccion) { game.onTick(1000, "comboDragon", {self.moverseEnemigo()})}
+    override method moverseEnemigo() {
+        super()
+        // pensar en resolver este método. que se mueva por los bordes. (vertical y horizontalmente O QUE SIGA AL MAGO) EL SUPER YA HACE QUE ATAQUE
+    }
+    override method mirarA(unaDireccion) {
+        if(self.puedeMoverseA(unaDireccion)) { 
+            super(unaDireccion)
+            image = unaDireccion.imageDragon()
+        }
+    }
+    override method resetearPosicion() {
+        position = game.at(10, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
+    }
     method initialize() {
         image = "dragonIzquierdo.png"
-        position = game.at(17, 3) 
-        vida = nivel.dificultad().vidaEnemigo(self.vidaTotal())
-        daño = nivel.dificultad().dañoEnemigo(20)
-        cuadranteMinX = 11
-        cuadranteMaxX = 17
-        cuadranteMinY = 1
-        cuadranteMaxY = 4
+        position = game.at(10, 17) 
+        vidas = 5
+    }
+}
+
+object proyectilDragon inherits Proyectil (personaje = mago, image = "completar") {
+    override method serLanzado(haciaPersonaje) {
+        super(haciaPersonaje)
+        game.onTick(500, "proyectilDragon", {self.moverseRecto()})
     }
 }

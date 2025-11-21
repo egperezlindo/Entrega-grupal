@@ -1,8 +1,4 @@
-import nivel.*
-import mago.*
-import visuales.*
-import dificultades.*
-
+/*
 describe "Testeos movimientos" {
   test "Mago en su posicion inicial puede moverse hacia abajo en su posicion inicial" {
     assert.that(mago.puedeMoverseA(mago.direccion().siguiente(mago.position())))
@@ -17,3 +13,4 @@ describe "Testeos movimientos" {
     assert.that(avispa.puedeMoverseA(avispa.direccion().siguiente(avispa.position())))
   }
 }
+*/

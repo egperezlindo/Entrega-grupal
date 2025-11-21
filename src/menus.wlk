@@ -1,48 +1,47 @@
 import src.musica.*
 import wollok.game.*
 import visuales.*
-import nivel.*
-import mago.*
+import config.*
 
-class Menu inherits Visual (position = game.origin()) {
+class Menu inherits Visual {
     method abrir()
     method cerrar()
     method configuracionTeclado()
 }
-object menuInicio inherits Menu (image = "Menu_resized.png") { 
-    var property menuInicioAbierto = false 
 
+object menuInicio inherits Menu { 
+    var property menuInicioAbierto = false 
     override method abrir() { 
-        game.addVisual(fondoIni)
-        keyboard.j().onPressDo({ self.cerrar() })
+        menuInicioAbierto = true
+        game.addVisual(self)
+        self.configuracionTeclado()
     }
-    override method configuracionTeclado() {}
+    override method configuracionTeclado() { keyboard.space().onPressDo({self.cerrar()}) }
     override method cerrar() {
         menuInicioAbierto = false
-
-        game.removeVisual(fondoIni)
-        nivel.iniciarJuego() 
+        game.removeVisual(self)
+        juegoPorNiveles.nivelActual().iniciarNivel()
+    }
+    method initialize() {
+        image = "MenuInicio.png"
+        position = game.at(0,0)
     }
 }
 
-object menuPausa inherits Menu (image = "pausa.jpeg") {
+object menuPausa inherits Menu (image = "menuPausa.png", position = game.at(0,0)) {
     var property menuPausaAbierto = false 
     override method abrir() { 
         if(!menuPausaAbierto) {
-            menuPausaAbierto = true
-            mago.desactivarMovimiento()
-            nivel.desactivarComportamientoDeEnemigos()
-            game.addVisual(fondoPausa)
+            self.menuPausaAbierto(true)
+            game.addVisual(image)
             keyboard.p().onPressDo({self.abrir()})
         }
         else{
             menuPausaAbierto = false
-            mago.activarMovimiento()
-            nivel.activarComportamientoDeEnemigos()
-            game.removeVisual(fondoPausa)
+            game.removeVisual(image)
             musicaDeFondo.reanudar()
             keyboard.p().onPressDo({self.cerrar()})
-            keyboard.r().onPressDo({nivel.reiniciar()})
+            //keyboard.r().onPressDo({nivel.reiniciar()})
         }  
         
     }
@@ -50,56 +49,86 @@ object menuPausa inherits Menu (image = "pausa.jpeg") {
     override method configuracionTeclado() {}
 }
 
-object menuGanador inherits Menu (image = "menuWin.png") {
+object menuGanador inherits Menu (image = "menuInicio.png", position = game.at(0,0)) {
     override method abrir() {
         game.clear()
         const gano = game.sound("06 - Victory!.wav")
         musicaDeFondo.stop()
         gano.volume(0.3)
-        game.addVisual(fondoGano)
+        game.addVisual(image)
         gano.play()
         self.pararMusicaGanadora(gano)
     }
     override method cerrar() {}
-    override method configuracionTeclado() {}
+    override method configuracionTeclado() {} // faltaria que vuelva al inicio, o los créditos :)
     method pararMusicaGanadora(musica) {game.schedule(5000, {musica.stop()})}
 }
 
-object menuPerdedor inherits Menu (image = "menuReiniciar.png") {
-    
-    method initialize() {
-        position = game.at(6, 4) 
-    }
-
+object menuPerdedor inherits Menu (image = "menuInicio.png", position = game.at(0,0)) {
     override method abrir() {
         musicaDeFondo.stop()
         game.addVisual(self)
-        keyboard.r().onPressDo({ self.reiniciarDesdeMenu() })
+        self.configuracionTeclado()
     }
-
     method reiniciarDesdeMenu() {
-        game.removeVisual(self)
-        nivel.volverAlMenu() 
+        // game.removeVisual(self)
+        // nivel.volverAlMenu() 
     }
-    
     override method cerrar() {} 
-    override method configuracionTeclado() {}
+    override method configuracionTeclado() {
+        keyboard.r().onPressDo({ self.reiniciarDesdeMenu() }) // chequear esto al perder
+    }
 }
 
-object fondoIni {
-    method image() = "Menu_resized.png"
-    const property position = game.at(1,0)
-}
-object fondoGano {
-    method image() = "menuWin.png"
-    const property position = game.at(5,3)
-}
-object fondoPausa {
-    method image() = "menuPausaTrans.png"
-    const property position = game.at(3,2)
+object menuControles inherits Menu { 
+    override method abrir() { 
+        game.addVisual(self)
+        self.configuracionTeclado()
+    }
+    override method configuracionTeclado() { keyboard.space().onPressDo({self.cerrar()}) }
+    override method cerrar() {
+        game.removeVisual(self)
+        menuPausa.abrir() // chequear si los controles se ven al inicio en la pausa, o en las dos
+    }
+    method initialize() {
+        image = "MenuControles.png"
+        position = game.at(0,0)
+    }
 }
 
-object fondoPerdio {
-    method image() = "perdiste.jpeg"
-    const property position = game.at(0,0)
+object pantallaUno inherits Menu (position = game.origin(), image = "completar") {
+    override method abrir() {
+        game.addVisual(self)
+        self.configuracionTeclado()
+    }
+    override method cerrar() {
+        game.removeVisual(self)
+        juegoPorNiveles.nivelActual().iniciarNivel()
+    }
+    override method configuracionTeclado() {keyboard.space().onPressDo({self.cerrar()})}
+}
+
+object pantallaDos inherits Menu (position = game.origin(), image = "completar") {
+    override method abrir() {
+        game.addVisual(self)
+        game.removeVisual(juegoPorNiveles.nivelActual().image())
+        self.configuracionTeclado()
+    }
+    override method cerrar() {
+        game.removeVisual(self)
+        juegoPorNiveles.nivelActual().iniciarNivel()
+    }
+    override method configuracionTeclado() { keyboard.space().onPressDo({self.cerrar()})}
+}
+
+object pantallaTres inherits Menu (position = game.origin(), image = "completar") {
+    override method abrir() {
+        game.addVisual(self)
+        self.configuracionTeclado()
+    }
+    override method cerrar() {
+        game.removeVisual(self)
+        juegoPorNiveles.nivelActual().iniciarNivel()
+    }
+    override method configuracionTeclado() {keyboard.space().onPressDo({self.cerrar()})}
 }

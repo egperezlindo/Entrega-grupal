@@ -1,15 +1,10 @@
 import wollok.game.*
+import config.*
 import visuales.*
-import nivel.*
+import niveles.*
 import musica.*
 import menus.*
 
 program wollokDungeons {
-    game.width(20)
-    game.height(10)
-    game.title("Wollok Dungeons")
-    game.cellSize(50) 
-    game.boardGround("tableroNuevoGame.jpeg")
-    menuInicio.abrir()
-    game.start()
+    juegoPorNiveles.iniciarJuego()
 }
