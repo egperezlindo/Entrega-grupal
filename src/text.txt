@@ -1,0 +1,2 @@
+wollok.lang.MessageNotUnderstoodException: {proyectilMago.colisionar(personaje)} does not understand apply(arg 0)
+

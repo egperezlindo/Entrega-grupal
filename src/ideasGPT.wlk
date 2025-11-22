@@ -26,6 +26,9 @@ a veces no funciona el método iniciarNivel() en cerrar() de menuInicio:
 wollok.lang.EvaluationError
         at src.niveles.Nivel.iniciarNivel() [src/niveles.wlk:12]
         at src.menus.menuInicio.cerrar() [src/menus.wlk:23]
+
+wollok.lang.EvaluationError
+        at src.visuales.gusano.atacarA(mago) [src/visuales.wlk:125]
 */
 
 /* TODO ES CHATGPT IGNORAR pero no borrar :)

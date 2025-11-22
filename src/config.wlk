@@ -1,3 +1,4 @@
+import src.musica.*
 import src.menus.*
 import wollok.game.*
 import niveles.*
@@ -10,6 +11,7 @@ object juegoPorNiveles {
     game.width(20)
     game.height(20)
     game.title("Wollok Dungeons")
+    musicaDeFondo.play()
     game.start()
     menuInicio.abrir()
   }

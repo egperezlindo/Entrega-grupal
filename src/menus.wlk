@@ -23,12 +23,12 @@ object menuInicio inherits Menu {
         juegoPorNiveles.nivelActual().iniciarNivel()
     }
     method initialize() {
-        image = "menuInicio.jpeg"
+        image = "MenuInicio.jpeg"
         position = game.at(0,0)
     }
 }
 
-object menuPausa inherits Menu (image = "menuPausa.png", position = game.at(0,0)) {
+object menuPausa inherits Menu (image = "menuPausaTrans.png", position = game.at(0,0)) {
     var property menuPausaAbierto = false 
     override method abrir() { 
         if(!menuPausaAbierto) {
@@ -49,7 +49,7 @@ object menuPausa inherits Menu (image = "menuPausa.png", position = game.at(0,0)
     override method configuracionTeclado() {}
 }
 
-object menuGanador inherits Menu (image = "menuInicio.png", position = game.at(0,0)) {
+object menuGanador inherits Menu (image = "menuWin.png", position = game.at(0,0)) {
     override method abrir() {
         game.clear()
         const gano = game.sound("06 - Victory!.wav")
@@ -64,7 +64,7 @@ object menuGanador inherits Menu (image = "menuInicio.png", position = game.at(0
     method pararMusicaGanadora(musica) {game.schedule(5000, {musica.stop()})}
 }
 
-object menuPerdedor inherits Menu (image = "menuInicio.png", position = game.at(0,0)) {
+object menuPerdedor inherits Menu (image = "menuReiniciar.png", position = game.at(0,0)) {
     override method abrir() {
         musicaDeFondo.stop()
         game.addVisual(self)

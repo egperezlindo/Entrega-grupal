@@ -15,6 +15,7 @@ class Nivel inherits Visual (position = game.origin()) {
       game.addVisual(mago)
       game.addVisual(enemigo)
       mago.configuracionTeclado()
+      enemigo.comboEnemigo(arriba)
     }
     method estaGanado() = enemigo.estaMuerto()
     method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
