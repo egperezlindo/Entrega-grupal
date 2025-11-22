@@ -19,6 +19,13 @@ usen itchio.com
 PUEDEN ser otros personajes pero avisen con tiempo (o sea, que no sea avispa slime dragon o mago)
 
 se le puede añadir un nivel hard, donde el enemigo directamente te persiga para atacarte, y que se mueva/ataque cada 0.5 segundos
+
+arreglar:
+colisiona mago con enemigo
+a veces no funciona el método iniciarNivel() en cerrar() de menuInicio:
+wollok.lang.EvaluationError
+        at src.niveles.Nivel.iniciarNivel() [src/niveles.wlk:12]
+        at src.menus.menuInicio.cerrar() [src/menus.wlk:23]
 */
 
 /* TODO ES CHATGPT IGNORAR pero no borrar :)

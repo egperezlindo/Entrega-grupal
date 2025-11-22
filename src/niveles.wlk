@@ -17,28 +17,29 @@ class Nivel inherits Visual (position = game.origin()) {
       mago.configuracionTeclado()
     }
     method estaGanado() = enemigo.estaMuerto()
+    method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
 }
 
 object nivelUno inherits Nivel {
   method initialize() {
-    enemigo = avispa 
+    enemigo = gusano 
     pantalla = pantallaUno
-    image = "escenarioUno.jpg"
+    image = "escenarioUno.png"
   }
 }
 
 object nivelDos inherits Nivel {
   method initialize() {
-    enemigo = slime
+    enemigo = caracol
     pantalla = pantallaDos
-    image = ""
+    image = "escenarioDos.png"
   }
 }
 
 object nivelTres inherits Nivel {
   method initialize() {
-    enemigo = dragon
+    enemigo = demonio
     pantalla = pantallaTres
-    image = ""
+    image = "escenarioTres.png"
   }
 }

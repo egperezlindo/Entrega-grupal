@@ -23,7 +23,7 @@ object menuInicio inherits Menu {
         juegoPorNiveles.nivelActual().iniciarNivel()
     }
     method initialize() {
-        image = "MenuInicio.png"
+        image = "menuInicio.jpeg"
         position = game.at(0,0)
     }
 }

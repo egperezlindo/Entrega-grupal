@@ -12,18 +12,20 @@ class Personaje inherits Visual {
     var property vidas = 3
     var property direccion = abajo
     var property proyectil
-    method puedeMoverseA(pos) = 
+    method puedeMoverseA(pos) =
         pos.x() >= 0 &&
         pos.y() >= 0 &&
         pos.x() < game.width() &&
-        pos.y() < game.height()
+        pos.y() < game.height() &&
+        not juegoPorNiveles.nivelActual().enemigoVivoEn(self.position())
+    
     method atacarA(personaje) {
         personaje.perderVida(self)
         game.sound("punch.wav").play() // cambiar
     }
     method perderVida(personaje) { vidas = (vidas - 1).max(0) }
     method mirarA(unaDireccion) {
-        if(self.puedeMoverseA(unaDireccion)) { 
+        if(self.puedeMoverseA(unaDireccion.siguiente(self.position()))) { 
             direccion = unaDireccion
         }
     }
@@ -63,10 +65,9 @@ object mago inherits Personaje (proyectil = proyectilMago) {
     var property enemigo = juegoPorNiveles.nivelActual().enemigo()
     method posicionDeAtaque() = direccion.siguiente(self.position())
     override method mirarA(unaDireccion) {
-        if(self.puedeMoverseA(unaDireccion)) { 
-            super(unaDireccion)
-            image = unaDireccion.imageMago()
-        }
+        super(unaDireccion)
+        image = unaDireccion.imageMago()
+        
     }
     method configuracionTeclado() {
         if (!menuPausa.menuPausaAbierto()) {
@@ -78,11 +79,11 @@ object mago inherits Personaje (proyectil = proyectilMago) {
         }
     }
     override method resetearPosicion() {
-        position = game.at(3,2) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
+        position = game.at(8, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
     }
     method initialize() {
         image = direccion.imageMago()
-        position = game.at(3, 2) 
+        position = game.at(8, 17) 
         vidas = 3
     }
 }
@@ -99,8 +100,8 @@ class Enemigo inherits Personaje {
     method moverseEnemigo() { self.atacarA(mago) }
 }
 
-object avispa inherits Enemigo (proyectil = proyectilAvispa) {
-    override method comboEnemigo(unaDireccion) { game.onTick(1500, "comboAvispa", {self.moverseEnemigo()}) }
+object gusano inherits Enemigo (proyectil = proyectilGusano) { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
+    override method comboEnemigo(unaDireccion) { game.onTick(1500, "comboGusano", {self.moverseEnemigo()}) }
     override method moverseEnemigo() {
         super()
         if (position.x() == 3) { self.moverA(derecha) } // este método puede mejorarse
@@ -116,24 +117,24 @@ object avispa inherits Enemigo (proyectil = proyectilAvispa) {
         game.sound("punch.wav").play() // cambiar sonido 
     }
     override method resetearPosicion() {
-        position = game.at(10, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
+        position = game.at(8, 3) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
         // puede tener la clase personaje una posicion inicial para ahorrarnos esto!
     }
     method initialize() {
-        image = "avispaFrente.png" // nunca se le actualiza la imagen a otra que no sea su reves porque solo se mueve de forma horizontal
-        position = game.at(10, 17)
+        image = "enemigoUno.png" // nunca se le actualiza la imagen a otra que no sea su reves porque solo se mueve de forma horizontal
+        position = game.at(8, 3)
     }
 }
 
-object proyectilAvispa inherits Proyectil (personaje = mago, image = "completar") {
+object proyectilGusano inherits Proyectil (personaje = mago, image = "completar") {
     override method serLanzado(haciaPersonaje) {
         super(haciaPersonaje)
-        game.onTick(1500, "proyectilAvispa", {self.moverseRecto()})
+        game.onTick(1500, "proyectilGusano", {self.moverseRecto()})
     }
 }
 
-object slime inherits Enemigo (proyectil = proyectilSlime) {
-    override method comboEnemigo(unaDireccion) { game.onTick(1000, "comboSlime", {self.moverseEnemigo()})}
+object caracol inherits Enemigo (proyectil = proyectilCaracol) { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
+    override method comboEnemigo(unaDireccion) { game.onTick(1000, "comboCaracol", {self.moverseEnemigo()})}
     override method moverseEnemigo() {
         super()
         // pensar en resolver este método. que se mueva por los bordes. (vertical y horizontalmente) EL SUPER YA HACE QUE ATAQUE
@@ -148,21 +149,21 @@ object slime inherits Enemigo (proyectil = proyectilSlime) {
         position = game.at(10,17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
     }
     method initialize() {
-        image = "slimeIzquierdo.png"
+        image = "enemigoDos.png"
         position = game.at(10, 17)
         vidas = 4
     }
 }
 
-object proyectilSlime inherits Proyectil (personaje = mago, image = "completar") {
+object proyectilCaracol inherits Proyectil (personaje = mago, image = "completar") {
     override method serLanzado(haciaPersonaje) {
         super(haciaPersonaje)
-        game.onTick(1000, "proyectilSlime", {self.moverseRecto()}) // 
+        game.onTick(1000, "proyectilCaracol", {self.moverseRecto()}) // 
     }
 }
 
-object dragon inherits Enemigo (proyectil = proyectilDragon) {
-    override method comboEnemigo(unaDireccion) { game.onTick(1000, "comboDragon", {self.moverseEnemigo()})}
+object demonio inherits Enemigo (proyectil = proyectilDemonio) { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
+    override method comboEnemigo(unaDireccion) { game.onTick(500, "comboDemonio", {self.moverseEnemigo()})}
     override method moverseEnemigo() {
         super()
         // pensar en resolver este método. que se mueva por los bordes. (vertical y horizontalmente O QUE SIGA AL MAGO) EL SUPER YA HACE QUE ATAQUE
@@ -177,15 +178,15 @@ object dragon inherits Enemigo (proyectil = proyectilDragon) {
         position = game.at(10, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
     }
     method initialize() {
-        image = "dragonIzquierdo.png"
+        image = "enemigoTres.png"
         position = game.at(10, 17) 
         vidas = 5
     }
 }
 
-object proyectilDragon inherits Proyectil (personaje = mago, image = "completar") {
+object proyectilDemonio inherits Proyectil (personaje = mago, image = "completar") {
     override method serLanzado(haciaPersonaje) {
         super(haciaPersonaje)
-        game.onTick(500, "proyectilDragon", {self.moverseRecto()})
+        game.onTick(500, "proyectilDemonio", {self.moverseRecto()})
     }
 }
