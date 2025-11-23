@@ -83,6 +83,7 @@ class ProyectilMago inherits Proyectil (personaje = mago) {
     const property enemigo
     override method serLanzado() {
         super()
+        mago.image(direccionDisparo.imageAtaque())
         game.onCollideDo(self, { enemigo => 
             self.enemigo().perderVida() 
             game.removeVisual(self)

@@ -14,7 +14,7 @@ object arriba inherits Movimiento {
     override method siguiente(pos) = pos.up(1) 
     override method contrario() = abajo
     override method imageMago() = "magoReves.png"
-    override method imageAtaque() = "magoAtaqueArriba.png"
+    override method imageAtaque() = "magoRevesAtaque.png"
     override method imageGusano() = "enemigoUno.png"
     override method imageCaracol() = "enemigoDos.png"
     override method imageDemonio() = "enemigoTres.png"
