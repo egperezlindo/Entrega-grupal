@@ -5,6 +5,4 @@ import niveles.*
 import musica.*
 import menus.*
 
-program wollokDungeons {
-    juegoPorNiveles.iniciarJuego()
-} 
+program wollokDungeons { juegoPorNiveles.iniciarJuego() } 

@@ -26,10 +26,6 @@ object juegoPorNiveles {
       } // else { menuGanador.abrir() }
     }
   }
-  method reiniciarJuego() {
-    self.indice(0)
-    self.iniciarJuego()
-  }
 }
 /*
 object juegoPorNiveles {

@@ -33,7 +33,12 @@ class Personaje inherits Visual {
         
     }
     method resetearPosicion()
-    method resetear() { self.initialize() } // cheq
+    method resetearVidas()
+    method resetear() { 
+        self.resetearPosicion() 
+        self.resetearVidas()
+        direccion = izquierda
+    }
     method estaMuerto() = vidas == 0
     method tieneVidas() = vidas > 0
     method morir()
@@ -62,18 +67,17 @@ object mago inherits Personaje (direccion = abajo) {
         super(unaDireccion)
         image = direccion.imageMago()  
     }
-    override method resetearPosicion() {
-        position = game.at(8, 17)
-    }
+    override method resetearPosicion() { position = game.at(8, 17) }
+    override method resetearVidas() { vidas = 3 }
     override method atacar() {
-        if(!menuPausa.menuPausaAbierto()){
+        if(!menuPausa.menuPausaAbierto()) {
             const proyectil = new ProyectilMago(enemigo = self.enemigo())
             image = direccion.imageAtaque()
             game.sound("punch.wav").play()
-            proyectil.serLanzado() 
+            proyectil.serLanzado()
         }
     }
-    override method morir() { juegoPorNiveles.reiniciarJuego() }
+    override method morir() { juegoPorNiveles.nivelActual().volverAlMenu() }
     method initialize() {
         image = direccion.imageMago()
         position = juegoPorNiveles.nivelActual().posicionMago()
@@ -103,9 +107,8 @@ object gusano inherits Enemigo (direccion = izquierda) { // ES DE PRUEBA LA ESTÃ
             }
         }
     }
-    override method invertirDireccion() {direccion = direccion.contrario() }
+    override method invertirDireccion() { direccion = direccion.contrario() }
     override method puedeMoverseA(pos) =
-        pos != mago.position() &&
         pos.x() >= 3 &&
         pos.y() >= 3 &&
         pos.x() <= 17 &&
@@ -125,6 +128,9 @@ object gusano inherits Enemigo (direccion = izquierda) { // ES DE PRUEBA LA ESTÃ
         position = game.at(8, 3) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal serÃ­a q aparezca en el medio, o en el medio arriba
         // puede tener la clase personaje una posicion inicial para ahorrarnos esto!
     }
+    override method resetearVidas() {
+        vidas = 3
+    }
     override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
     method initialize() {
         image = direccion.imageGusano()
@@ -136,7 +142,7 @@ object gusano inherits Enemigo (direccion = izquierda) { // ES DE PRUEBA LA ESTÃ
 object caracol inherits Enemigo (direccion = izquierda) {
     override method comboEnemigo() { 
         game.onTick(650, "movimientoCaracol", { self.moverseEnemigo() }) 
-        game.onTick(1000, "ataqueCaracol", { self.atacar() })
+        game.onTick(1500, "ataqueCaracol", { self.atacar() })
     }
     override method moverseEnemigo() {
         const siguiente = direccion.siguiente(position)
@@ -153,7 +159,6 @@ object caracol inherits Enemigo (direccion = izquierda) {
     }
     override method invertirDireccion() { direccion = direccion.siguienteCiclo() }
     override method puedeMoverseA(pos) =
-        pos != mago.position() &&
         pos.x() >= 3 &&
         pos.y() >= 3 &&
         pos.x() <= 17 &&
@@ -170,6 +175,9 @@ object caracol inherits Enemigo (direccion = izquierda) {
     override method resetearPosicion() {
         position = game.at(8, 3)
     }
+    override method resetearVidas() {
+        vidas = 4
+    }
     override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
     method initialize() {
         image = direccion.imageCaracol()
@@ -180,8 +188,8 @@ object caracol inherits Enemigo (direccion = izquierda) {
 
 object demonio inherits Enemigo (direccion = izquierda) {
     override method comboEnemigo() { 
-        game.onTick(550, "movimientoDemonio", { self.moverseEnemigo() }) 
-        game.onTick(500, "ataqueDemonio", { self.atacar() })
+        game.onTick(500, "movimientoDemonio", { self.moverseEnemigo() }) 
+        game.onTick(1500, "ataqueDemonio", { self.atacar() })
     }
     override method moverseEnemigo() {
         const siguiente = direccion.siguiente(position)
@@ -195,7 +203,6 @@ object demonio inherits Enemigo (direccion = izquierda) {
     }
     override method invertirDireccion() { direccion = direccion.siguienteCiclo() }
     override method puedeMoverseA(pos) =
-        pos != mago.position() &&
         pos.x() >= 3 &&
         pos.y() >= 3 &&
         pos.x() <= 17 &&
@@ -213,6 +220,9 @@ object demonio inherits Enemigo (direccion = izquierda) {
     }
     override method resetearPosicion() {
         position = game.at(8, 3)
+    }
+    override method resetearVidas() {
+        vidas = 5
     }
     override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
     method initialize() {

@@ -8,29 +8,28 @@ class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje
     var property personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
-    method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto()) {
-        self.position(direccionDisparo.siguiente(self.position()))
-    }}
+    method moverseRecto()
     method tieneVidas() = false
     method estaFuera()
 }
 
 class ProyectilMago inherits Proyectil (personaje = mago) {
     var property contador = 0
-    var property tickId = "proyectilMago"
-    const property enemigo
+    var property tickId
+    var property enemigo
     override method serLanzado() {
         super()
         game.onCollideDo(self, { enemigo =>
-            if (enemigo.tieneVidas()) {enemigo.perderVida() }
+            if (enemigo.tieneVidas()) { enemigo.perderVida() }
             game.removeVisual(self)
         })
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        super()
-        if ( self.estaFuera()) { 
+        if(!menuPausa.menuPausaAbierto()) {
+            self.position(direccionDisparo.siguiente(self.position()))
+        }
+        if (self.estaFuera()) { 
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         }
@@ -41,10 +40,11 @@ class ProyectilMago inherits Proyectil (personaje = mago) {
         position.y() > game.height() or
         position.y() < 0
     method initialize() {
-        contador = contador + 1
-        tickId = tickId + contador.toString()
-        direccionDisparo = personaje.direccion()
+        enemigo = personaje.enemigo()
         image = "proyectilMago.gif"
+        contador = contador + 1
+        tickId = "proyectilMago" + contador.toString()
+        direccionDisparo = personaje.direccion()
     }
 }
 
@@ -60,7 +60,9 @@ class ProyectilGusano inherits Proyectil (personaje = gusano) {
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        super()
+        if(!menuPausa.menuPausaAbierto()) {
+            self.position(direccionDisparo.siguiente(self.position()))
+        }
         if ( self.estaFuera()) { 
             game.removeVisual(self)
             game.removeTickEvent("tickId")
@@ -91,7 +93,9 @@ class ProyectilCaracol inherits Proyectil (personaje = caracol) {
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        super()
+        if(!menuPausa.menuPausaAbierto()) {
+            self.position(direccionDisparo.siguiente(self.position()))
+        }
         if ( self.estaFuera()) { 
             game.removeVisual(self)
             game.removeTickEvent("tickId")
@@ -122,7 +126,9 @@ class ProyectilDemonio inherits Proyectil (personaje = demonio) {
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        super()
+        if(!menuPausa.menuPausaAbierto()) {
+            self.position(direccionDisparo.siguiente(self.position()))
+        }
         if ( self.estaFuera()) { 
             game.removeVisual(self)
             game.removeTickEvent("tickId")

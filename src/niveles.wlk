@@ -14,16 +14,16 @@ class Nivel inherits Visual (position = game.origin()) {
       game.clear()
       iniciado = true
       game.addVisual(self)
+      self.musica().play()
       mago.resetear()
-      enemigo.resetear()
       game.addVisual(mago)
+      enemigo.resetear()
       game.addVisual(enemigo)
       mago.configuracionTeclado()
-      enemigo.comboEnemigo(arriba)
+      enemigo.comboEnemigo()
     }
     method volverAlMenu() {
     iniciado = false
-    self.musica().reanudar()
     self.musica().stop()
     game.clear()
     juegoPorNiveles.indice(0)
