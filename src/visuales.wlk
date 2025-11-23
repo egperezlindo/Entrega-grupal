@@ -11,13 +11,7 @@ class Visual {
 class Personaje inherits Visual {
     var property vidas
     var property direccion
-    method puedeMoverseA(pos) =
-        pos.x() >= 0 &&
-        pos.y() >= 0 &&
-        pos.x() < game.width() &&
-        pos.y() < game.height() &&
-        not juegoPorNiveles.nivelActual().enemigoVivoEn(self.position())
-    
+    method puedeMoverseA(pos) = not juegoPorNiveles.nivelActual().enemigoVivoEn(self.position()) 
     method atacar()
     method perderVida() { vidas = (vidas - 1).max(0) }
     method mirarA(unaDireccion) {
@@ -58,6 +52,12 @@ object mago inherits Personaje (direccion = abajo) {
             keyboard.f().onPressDo({self.atacar()})
         }
     }
+    override method puedeMoverseA(pos) =
+        pos.x() >= 1 &&
+        pos.y() >= 1 &&
+        pos.x() < 18 &&
+        pos.y() < 18 &&
+        not juegoPorNiveles.nivelActual().enemigoVivoEn(self.position())
     override method mirarA(unaDireccion) {
         super(unaDireccion)
         image = unaDireccion.imageMago()  
