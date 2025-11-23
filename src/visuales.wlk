@@ -20,10 +20,13 @@ class Personaje inherits Visual {
         }
     }
     method moverA(unaDireccion) {
-        self.mirarA(unaDireccion)
+        if(!menuPausa.menuPausaAbierto()){
+            self.mirarA(unaDireccion)
         if (self.puedeMoverseA(unaDireccion.siguiente(self.position()))) {
             self.position(unaDireccion.siguiente(self.position()))
         }
+        }
+        
     }
     method resetearPosicion()
     method resetear() { self.initialize() } // cheq
@@ -35,7 +38,10 @@ class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje
     var property personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
-    method moverseRecto() { self.position(direccionDisparo.siguiente(self.position()))}
+    method moverseRecto() {
+        if(!menuPausa.menuPausaAbierto()) {
+        self.position(direccionDisparo.siguiente(self.position()))
+    }}
     method tieneVidas() = false
     method estaFuera()
 }
@@ -66,9 +72,11 @@ object mago inherits Personaje (direccion = abajo) {
         position = game.at(8, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
     }
     override method atacar() {
-        const proyectil = new ProyectilMago(enemigo = self.enemigo())
-        game.sound("punch.wav").play() //proyectilMago.serLanzado(personaje)
-        proyectil.serLanzado() //game.onCollideDo(proyectilMago, {proyectilMago.colisionar(personaje)})
+        if(!menuPausa.menuPausaAbierto()){
+            const proyectil = new ProyectilMago(enemigo = self.enemigo())
+            game.sound("punch.wav").play() //proyectilMago.serLanzado(personaje)
+            proyectil.serLanzado() //game.onCollideDo(proyectilMago, {proyectilMago.colisionar(personaje)})
+        }
     }
     method initialize() {
         image = direccion.imageMago()
@@ -122,8 +130,8 @@ object gusano inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     }
     override method moverseEnemigo() {
         const siguiente = direccion.siguiente(position)
-        if(self.puedeMoverseA(siguiente)) { self.position(siguiente) }
-        else {
+        if(self.puedeMoverseA(siguiente) and !menuPausa.menuPausaAbierto()) { self.position(siguiente) }
+        else if(!menuPausa.menuPausaAbierto()) {
             self.invertirDireccion()
             self.position(direccion.siguiente(position))
         }
@@ -135,9 +143,11 @@ object gusano inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
         pos.x() <= 17 &&
         pos.y() <= 17
     override method atacar() {
-        const proyectil = new ProyectilGusano()
-        game.sound("punch.wav").play() // cambiar sonido 
-        proyectil.serLanzado()
+        if(!menuPausa.menuPausaAbierto()){
+            const proyectil = new ProyectilGusano()
+            game.sound("punch.wav").play() // cambiar sonido 
+            proyectil.serLanzado()
+        }
     }
     override method resetearPosicion() {
         position = game.at(8, 3) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba

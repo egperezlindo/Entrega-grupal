@@ -9,12 +9,13 @@ class Menu inherits Visual {
     method configuracionTeclado()
 }
 
-object menuInicio inherits Menu { 
+object menuInicio inherits Menu{ 
     var property menuInicioAbierto = false 
     override method abrir() { 
         menuInicioAbierto = true
         game.addVisual(self)
         self.configuracionTeclado()
+        menuPausa.initialize()
     }
     override method configuracionTeclado() { keyboard.space().onPressDo({self.cerrar()}) }
     override method cerrar() {
@@ -28,25 +29,30 @@ object menuInicio inherits Menu {
     }
 }
 
-object menuPausa inherits Menu (image = "menuPausaTrans.png", position = game.at(0,0)) {
+object menuPausa inherits Menu {
     var property menuPausaAbierto = false 
     override method abrir() { 
         if(!menuPausaAbierto) {
-            self.menuPausaAbierto(true)
-            game.addVisual(image)
-            keyboard.p().onPressDo({self.abrir()})
+            menuPausaAbierto = true
+            game.addVisual(self)
+            musicaDeFondo.pausar()
+            self.configuracionTeclado()
         }
         else{
             menuPausaAbierto = false
-            game.removeVisual(image)
+            game.removeVisual(self)
             musicaDeFondo.reanudar()
-            keyboard.p().onPressDo({self.cerrar()})
+            //musicaDeFondo.reanudar()
             //keyboard.r().onPressDo({nivel.reiniciar()})
-        }  
-        
+        }
     }
     override method cerrar() {}
-    override method configuracionTeclado() {}
+    override method configuracionTeclado() {keyboard.p().onPressDo({self.abrir()})}
+    method initialize(){
+        self.configuracionTeclado()
+        image = "menuPausaTrans.png"
+        position = game.at(4,6)
+    }
 }
 
 object menuGanador inherits Menu (image = "menuWin.png", position = game.at(0,0)) {
