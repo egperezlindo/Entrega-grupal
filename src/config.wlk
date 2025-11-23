@@ -11,13 +11,13 @@ object juegoPorNiveles {
     game.width(20)
     game.height(20)
     game.title("Wollok Dungeons")
-    musicaDeFondo.play()
     game.start()
     menuInicio.abrir()
   }
   method nivelActual() = nivelesDeJuego.get(indice)
   method turno() {
     if (self.nivelActual().estaGanado()) {
+      self.nivelActual().musica().stop()
       indice = indice + 1
       if (indice < nivelesDeJuego.size()) {
         self.nivelActual().iniciarNivel()

@@ -2,6 +2,7 @@ import src.musica.*
 import wollok.game.*
 import visuales.*
 import config.*
+import niveles.*
 
 class Menu inherits Visual {
     method abrir()
@@ -9,7 +10,8 @@ class Menu inherits Visual {
     method configuracionTeclado()
 }
 
-object menuInicio inherits Menu{ 
+object menuInicio inherits Menu{
+    const property musicaMenu = musicaDeFondo
     var property menuInicioAbierto = false 
     override method abrir() { 
         menuInicioAbierto = true
@@ -35,23 +37,24 @@ object menuPausa inherits Menu {
         if(!menuPausaAbierto) {
             menuPausaAbierto = true
             game.addVisual(self)
-            musicaDeFondo.pausar()
+            juegoPorNiveles.nivelActual().musica().pausar()
             self.configuracionTeclado()
         }
         else{
             menuPausaAbierto = false
             game.removeVisual(self)
-            musicaDeFondo.reanudar()
-            //musicaDeFondo.reanudar()
-            //keyboard.r().onPressDo({nivel.reiniciar()})
+            juegoPorNiveles.nivelActual().musica().reanudar()
         }
     }
     override method cerrar() {}
-    override method configuracionTeclado() {keyboard.p().onPressDo({self.abrir()})}
+    override method configuracionTeclado() {
+        keyboard.p().onPressDo({self.abrir()})
+        keyboard.m().onPressDo({ juegoPorNiveles.nivelActual().volverAlMenu()})
+    }
     method initialize(){
         self.configuracionTeclado()
-        image = "menuPausaTrans.png"
-        position = game.at(4,6)
+        image = "MenuPausa.png"
+        position = game.at(-1,0)
     }
 }
 

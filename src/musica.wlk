@@ -1,19 +1,52 @@
 import wollok.game.*
 
-object musicaDeFondo {
-    const sonido = game.sound("clintEastwood.mp3")
+
+class Musica{
+    var property sonido
+    var property estado
+
     method play() {
-        sonido.shouldLoop(true)
-        sonido.volume(0.2)
-        sonido.play()   
+           if(!estado){
+            estado = true
+            sonido.shouldLoop(true)
+            sonido.volume(0.2)
+            sonido.play()
+           }
     }
     method pausar() {
-        sonido.pause()
+        if(estado){sonido.pause()}
+        
     }
     method reanudar(){
-        sonido.resume()
+        if(estado){sonido.resume()}
+        
+        
     }
     method stop() {
+        if(estado){
+            estado = false
+            sonido.stop()
+        }
+        
+    }
+
+    method reiniciar() {
         sonido.stop()
+        sonido.shouldLoop(true)
+        sonido.volume(0.2)
+        sonido.play()
+    }
+}
+object musicaDeFondo inherits Musica{
+    method initialize() {
+        estado = false
+        sonido = game.sound("MenuMBM.MP3")
+    }
+}
+
+object musicaNivel1 inherits Musica{
+    method initialize() {
+        estado = false
+        sonido = game.sound("clintEastwood.mp3")
     }
 }
