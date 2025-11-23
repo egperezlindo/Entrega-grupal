@@ -11,8 +11,8 @@ class Nivel inherits Visual (position = game.origin()) {
   var property musica 
   var property iniciado = false
   method iniciarNivel() {
+      game.clear()
       iniciado = true
-      self.musica().play()
       game.addVisual(self)
       mago.resetear()
       enemigo.resetear()
@@ -21,10 +21,7 @@ class Nivel inherits Visual (position = game.origin()) {
       mago.configuracionTeclado()
       enemigo.comboEnemigo(arriba)
     }
-    method estaGanado() = enemigo.estaMuerto()
-    method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
-  
-  method volverAlMenu() {
+    method volverAlMenu() {
     iniciado = false
     self.musica().reanudar()
     self.musica().stop()
@@ -32,34 +29,36 @@ class Nivel inherits Visual (position = game.origin()) {
     juegoPorNiveles.indice(0)
     menuPausa.menuPausaAbierto(false)
     menuInicio.abrir()
-}
+  }
+    method estaGanado() = enemigo.estaMuerto()
+    method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
+    method posicionMago() = game.at(8,9)
 }
 
 object nivelUno inherits Nivel {
-
-
+  override method posicionMago() = game.at(8,17)
   method initialize() {
-    musica = musicaNivel1
     enemigo = gusano 
     pantalla = pantallaUno
     image = "escenarioUno.png"
+    musica = musicaNivel1
   }
 }
 
 object nivelDos inherits Nivel {
   method initialize() {
-    musica = "//llenar"
     enemigo = caracol
     pantalla = pantallaDos
     image = "escenarioDos.png"
+    musica = musicaNivel1 // cambiar
   }
 }
 
 object nivelTres inherits Nivel {
   method initialize() {
-    musica = "//llenar"
     enemigo = demonio
     pantalla = pantallaTres
     image = "escenarioTres.png"
+    musica = musicaNivel1 // cambiar
   }
 }

@@ -1,6 +1,5 @@
 import wollok.game.*
 
-
 class Musica{
     var property sonido
     var property estado

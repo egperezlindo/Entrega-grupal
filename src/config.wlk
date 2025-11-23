@@ -15,15 +15,20 @@ object juegoPorNiveles {
     menuInicio.abrir()
   }
   method nivelActual() = nivelesDeJuego.get(indice)
-  method turno() {
+  method pasarASiguienteNivel() {
     if (self.nivelActual().estaGanado()) {
       self.nivelActual().musica().stop()
       indice = indice + 1
       if (indice < nivelesDeJuego.size()) {
+        self.nivelActual().initialize()
         self.nivelActual().iniciarNivel()
         // self.nivelActual().pantalla.abrir()
       } // else { menuGanador.abrir() }
     }
+  }
+  method reiniciarJuego() {
+    self.indice(0)
+    self.iniciarJuego()
   }
 }
 /*

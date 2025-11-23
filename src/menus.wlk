@@ -2,7 +2,6 @@ import src.musica.*
 import wollok.game.*
 import visuales.*
 import config.*
-import niveles.*
 
 class Menu inherits Visual {
     method abrir()
@@ -26,7 +25,7 @@ object menuInicio inherits Menu{
         juegoPorNiveles.nivelActual().iniciarNivel()
     }
     method initialize() {
-        image = "MenuInicio.jpeg"
+        image = "inicio.jpeg"
         position = game.at(0,0)
     }
 }
@@ -53,7 +52,7 @@ object menuPausa inherits Menu {
     }
     method initialize(){
         self.configuracionTeclado()
-        image = "MenuPausa.png"
+        image = "pausa.png"
         position = game.at(-1,0)
     }
 }
@@ -100,7 +99,7 @@ object menuControles inherits Menu {
         menuPausa.abrir() // chequear si los controles se ven al inicio en la pausa, o en las dos
     }
     method initialize() {
-        image = "MenuControles.png"
+        image = "controles.png"
         position = game.at(0,0)
     }
 }
