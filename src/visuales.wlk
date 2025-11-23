@@ -18,10 +18,7 @@ class Personaje inherits Visual {
         pos.y() < game.height() &&
         not juegoPorNiveles.nivelActual().enemigoVivoEn(self.position())
     
-    method atacarA(personaje) {
-        personaje.perderVida(self)
-        game.sound("punch.wav").play() // cambiar
-    }
+    method atacar()
     method perderVida() { vidas = (vidas - 1).max(0) }
     method mirarA(unaDireccion) {
         if(self.puedeMoverseA(unaDireccion.siguiente(self.position()))) { 
@@ -37,24 +34,16 @@ class Personaje inherits Visual {
     method resetearPosicion()
     method resetear() { self.initialize() } // cheq
     method estaMuerto() = vidas == 0
+    method tieneVidas() = vidas > 0
 }
 
 class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje.position())) {
     var property personaje
-    const property direccionDisparo = personaje.direccion()
-    method serLanzado(haciaPersonaje) {
-        game.addVisual(self)
-        self.colisionar(haciaPersonaje)
-    }
-    method moverseRecto() {
-        self.position(direccionDisparo.siguiente(self.position()))
-        if ( position.y() > game.height()) { //position.x() > game.width() or
-            game.removeVisual(self)
-        }
-    }
-    method colisionar(unPersonaje) {
-        game.onCollideDo(self, { unPersonaje => unPersonaje.perderVida() })
-    }
+    var property direccionDisparo
+    method serLanzado() { game.addVisual(self) }
+    method moverseRecto() { self.position(direccionDisparo.siguiente(self.position()))}
+    method tieneVidas() = false
+    method estaFuera()
 }
 
 object mago inherits Personaje (direccion = abajo) {
@@ -66,7 +55,7 @@ object mago inherits Personaje (direccion = abajo) {
             keyboard.s().onPressDo({self.moverA(abajo)})
             keyboard.d().onPressDo({self.moverA(derecha)})
             keyboard.a().onPressDo({self.moverA(izquierda)})
-            keyboard.f().onPressDo({self.atacarA(enemigo)})
+            keyboard.f().onPressDo({self.atacar()})
         }
     }
     override method mirarA(unaDireccion) {
@@ -76,22 +65,47 @@ object mago inherits Personaje (direccion = abajo) {
     override method resetearPosicion() {
         position = game.at(8, 17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
     }
+    override method atacar() {
+        const proyectil = new ProyectilMago(enemigo = self.enemigo())
+        game.sound("punch.wav").play() //proyectilMago.serLanzado(personaje)
+        proyectil.serLanzado() //game.onCollideDo(proyectilMago, {proyectilMago.colisionar(personaje)})
+    }
     method initialize() {
         image = direccion.imageMago()
         position = game.at(8, 17) 
         vidas = 3
     }
-    override method atacarA(unEnemigo) {
-        const proyectil = new ProyectilMago()
-        game.sound("punch.wav").play() //proyectilMago.serLanzado(personaje)
-        proyectil.serLanzado(enemigo) //game.onCollideDo(proyectilMago, {proyectilMago.colisionar(personaje)})
-    }
 }
 
-class ProyectilMago inherits Proyectil (personaje = mago, image = "proyectilMago.gif") {
-    override method serLanzado(haciaPersonaje) {
-        super(haciaPersonaje)
-        game.onTick(500, "proyectilMago", {self.moverseRecto()})
+class ProyectilMago inherits Proyectil (personaje = mago) {
+    var property contador = 0
+    var property tickId = "proyectilMago"
+    const property enemigo
+    override method serLanzado() {
+        super()
+        game.onCollideDo(self, { enemigo => 
+            self.enemigo().perderVida() 
+            game.removeVisual(self)
+        })
+        game.onTick(350, tickId, {self.moverseRecto()})
+    }
+    override method moverseRecto() {
+        super()
+        if ( self.estaFuera()) { 
+            game.removeVisual(self)
+            game.removeTickEvent("proyectilMago")
+        }
+    }
+    override method estaFuera() = 
+        position.x() > game.width() or
+        position.x() < 0 or
+        position.y() > game.height() or
+        position.y() < 0
+    method initialize() {
+        contador = contador + 1
+        tickId = tickId + contador.toString()
+        direccionDisparo = personaje.direccion()
+        image = "proyectilMago.gif"
     }
 }
 
@@ -102,10 +116,8 @@ class Enemigo inherits Personaje {
 
 object gusano inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     override method comboEnemigo(unaDireccion) { 
-        game.onTick(750, "comboGusano", {
-            self.moverseEnemigo()
-            self.atacarA(mago)
-        }) 
+        game.onTick(750, "movimientoGusano", { self.moverseEnemigo() }) 
+        game.onTick(1500, "ataqueGusano", { self.atacar() })
     }
     override method moverseEnemigo() {
         const siguiente = direccion.siguiente(position)
@@ -121,10 +133,10 @@ object gusano inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
         pos.y() >= 3 &&
         pos.x() <= 17 &&
         pos.y() <= 17
-    override method atacarA(mago) {
-        const proyectil = new proyectilGusano()
+    override method atacar() {
+        const proyectil = new ProyectilGusano()
         game.sound("punch.wav").play() // cambiar sonido 
-        proyectil.serLanzado(mago)
+        proyectil.serLanzado()
     }
     override method resetearPosicion() {
         position = game.at(8, 3) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
@@ -138,12 +150,36 @@ object gusano inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     }
 }
 
-object proyectilGusano inherits Proyectil (personaje = gusano, image = "proyectilGusano.gif") {
-    override method serLanzado(mago) {
-        super(mago)
-        game.onTick(1500, "proyectilGusano", {self.moverseRecto()})
+class ProyectilGusano inherits Proyectil (personaje = gusano) {
+    var property contador = 0
+    var property tickId = "proyectilGusano"
+    override method serLanzado() {
+        super()
+        game.onTick(500, tickId, {self.moverseRecto()})
+        game.onCollideDo(self, { mago =>
+            if (mago.tieneVidas()) {
+                mago.perderVida() 
+                game.removeVisual(self)
+            }   
+        })
     }
-    override method colisionar(mago) { game.onCollideDo(self, { mago.perderVida() })
+    override method moverseRecto() {
+        super()
+        if ( self.estaFuera() ) { 
+            game.removeVisual(self)
+            game.removeTickEvent("proyectilGusano")
+        }
+    }
+    override method estaFuera() = 
+        position.x() > game.width() or
+        position.x() < 0 or
+        position.y() > game.height() or
+        position.y() < 0
+    method initialize() {
+        image = "proyectilGusano.gif"
+        direccionDisparo = arriba
+        contador = contador + 1
+        tickId = tickId + contador.toString()
     }
 }
 
@@ -152,7 +188,7 @@ object caracol inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     override method comboEnemigo(unaDireccion) { 
         game.onTick(1000, "comboCaracol", {
             self.moverseEnemigo()
-            self.atacarA(mago)
+            self.atacar()
         })
     }
     override method moverseEnemigo() { // modificar este método segun enemigo
@@ -168,10 +204,10 @@ object caracol inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
             image = unaDireccion.imageSlime()
         }
     }
-    override method atacarA(mago) {
+    override method atacar() {
         const proyectil = new ProyectilCaracol()
         game.sound("punch.wav").play() // cambiar sonido 
-        proyectil.serLanzado(mago)
+        proyectil.serLanzado()
     }
     override method resetearPosicion() {
         position = game.at(10,17) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal sería q aparezca en el medio, o en el medio arriba
@@ -184,12 +220,37 @@ object caracol inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     }
 }
 
-class ProyectilCaracol inherits Proyectil (personaje = caracol, image = "proyectilCaracol.gif") {
-    override method serLanzado(mago) {
-        super(mago)
-        game.onTick(1000, "proyectilCaracol", {self.moverseRecto()}) // 
+class ProyectilCaracol inherits Proyectil (personaje = caracol) {
+    var property contador = 0
+    var property tickId = "proyectilCaracol"
+    override method serLanzado() {
+        super()
+        game.onTick(400, tickId, {self.moverseRecto()})
+        game.onCollideDo(self, { mago =>
+            if (mago.tieneVidas()) {
+                mago.perderVida() 
+                game.removeVisual(self)
+            }   
+        })
     }
-    override method colisionar(mago) { game.onCollideDo(self, { mago.perderVida() })}
+    override method moverseRecto() {
+        super()
+        if ( position.y()-1 == game.height()) { 
+            game.removeVisual(self)
+            game.removeTickEvent("proyectilCaracol")
+        }
+    }
+    override method estaFuera() = 
+        position.x() > game.width() or
+        position.x() < 0 or
+        position.y() > game.height() or
+        position.y() < 0
+    method initialize() {
+        direccionDisparo = arriba // setear dependiendo del mov
+        image = "proyectilCaracol.gif"
+        contador = contador + 1
+        tickId = tickId + contador.toString()
+    }
 }
 
 object demonio inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
@@ -197,7 +258,7 @@ object demonio inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     override method comboEnemigo(unaDireccion) { 
         game.onTick(500, "comboCaracol", {
             self.moverseEnemigo()
-            self.atacarA(mago)
+            self.atacar()
         })
     }
     override method moverseEnemigo() { // modificar este método segun enemigo
@@ -207,10 +268,10 @@ object demonio inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
             self.position(direccion.siguiente(position))
         }
     }
-    override method atacarA(mago) {
+    override method atacar() {
         const proyectil = new ProyectilDemonio()
         game.sound("punch.wav").play() // cambiar sonido 
-        proyectil.serLanzado(mago)
+        proyectil.serLanzado()
     }
     override method mirarA(unaDireccion) {
         if(self.puedeMoverseA(unaDireccion)) { 
@@ -229,10 +290,35 @@ object demonio inherits Enemigo { // ES DE PRUEBA LA ESTÉTICA DEL ENEMIGO
     }
 }
 
-class ProyectilDemonio inherits Proyectil (personaje = demonio, image = "proyectilDemonio.gif") {
-    override method serLanzado(mago) {
-        super(mago)
-        game.onTick(500, "proyectilDemonio", {self.moverseRecto()})
+class ProyectilDemonio inherits Proyectil (personaje = demonio) {
+    var property contador = 0
+    var property tickId = "proyectilDemonio"
+    override method serLanzado() {
+        super()
+        game.onTick(500, tickId, {self.moverseRecto()})
+        game.onCollideDo(self, { mago =>
+            if (mago.tieneVidas()) {
+                mago.perderVida() 
+                game.removeVisual(self)
+            }   
+        })
     }
-    override method colisionar(mago) { game.onCollideDo(self, { mago.perderVida()}) }
+    override method moverseRecto() {
+        super()
+        if ( position.y()-1 == game.height()) { 
+            game.removeVisual(self)
+            game.removeTickEvent("proyectilDemonio")
+        }
+    }
+    override method estaFuera() = 
+        position.x() > game.width() or
+        position.x() < 0 or
+        position.y() > game.height() or
+        position.y() < 0
+    method initialize() {
+        contador = contador + 1
+        tickId = tickId + contador.toString()
+        direccionDisparo = arriba // setear dependiendo del mov
+        image = "proyectilDemonio.gif"
+    }
 }
