@@ -1,7 +1,6 @@
 import wollok.game.*
 import visuales.*
 import menus.*
-import obstaculos.*
 import corazones.*
 import movimientos.*
 import config.*

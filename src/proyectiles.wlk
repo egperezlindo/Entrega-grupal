@@ -8,143 +8,121 @@ class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje
     var property personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
-    method moverseRecto()
-    method estaFuera()
-    method tieneVidas() = false
-    method hayColumna(pos) = juegoPorNiveles.nivelActual().columnas().any({c => c.position() == pos})
-}
-
-class ProyectilMago inherits Proyectil (personaje = mago) {
-    var property contador = 0
-    var property tickId
-    var property enemigo
-    override method serLanzado() {
-        super()
-        game.onCollideDo(self, { enemigo =>
-            if (enemigo.tieneVidas()) { enemigo.perderVida() }
-            game.removeVisual(image)
-        })
-            if(!enemigo.tieneVidas()) {self.moverseRecto()} //esto debería resolver el tema del que mago se coma sus propios proyectiles
-            game.onTick(225, tickId, {self.moverseRecto()}) //si es necesario puede volverse a la normalidad
-    }
-    override method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto() and !self.hayColumna(direccionDisparo.siguiente(self.position()))) {
+    method moverseRecto() {
+        if(!menuPausa.menuPausaAbierto()) {
             self.position(direccionDisparo.siguiente(self.position()))
         }
-        if (self.estaFuera()) { 
-            game.removeVisual(self)
-            game.removeTickEvent(tickId)
-        }
     }
-    override method estaFuera() = 
+    method estaFuera() = 
         position.x() > game.width() or
         position.x() < 0 or
         position.y() > game.height() or
         position.y() < 0
+    method hayColumna(pos) = juegoPorNiveles.nivelActual().columnas().any({c => c.position() == pos})
+}
+
+object id { // podría hacerse uno por proyectil para reducir todavía más el lag (creo)
+    var ultimoId = 0
+    method nuevoId(unID) = unID + ultimoId.toString()
+    method actualizarUltimoID() { ultimoId = ultimoId + 1 }
+}
+
+class ProyectilMago inherits Proyectil (personaje = mago) {
+    var property tickId
+    const property enemigo
+    override method serLanzado() {
+        super()
+        game.onCollideDo(self, { enemigo =>
+            if (enemigo.tieneVidas()) {enemigo.perderVida() }
+            game.removeVisual(self)
+        })
+        game.onTick(350, tickId, {self.moverseRecto()})
+    }
+    override method moverseRecto() {
+        super()
+        if ( self.estaFuera()) { 
+            game.removeVisual(self)
+            game.removeTickEvent(tickId)
+        }
+    }
     method initialize() {
-        enemigo = personaje.enemigo()
-        image = "proyectilMago.gif"
-        contador = contador + 1
-        tickId = "proyectilMago" + contador.toString()
+        tickId = id.nuevoId("proyectilMago")
         direccionDisparo = personaje.direccion()
+        image = "proyectilMago.gif"
     }
 }
 
 class ProyectilGusano inherits Proyectil (personaje = gusano) {
-    var property contador = 0
-    var property tickId = "proyectilGusano"
+    var property tickId
     override method serLanzado() {
         super()
         game.onCollideDo(self, { mago =>
             if (mago.tieneVidas()) { mago.perderVida() }
             game.removeVisual(self)
+            game.removeTickEvent(tickId)
         })
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto()) {
-            self.position(direccionDisparo.siguiente(self.position()))
-        }
-        if ( self.estaFuera()) { 
+        super()
+        if (self.estaFuera()) { 
             game.removeVisual(self)
-            game.removeTickEvent("tickId")
+            game.removeTickEvent(tickId)
         }
     }
-    override method estaFuera() = 
-        position.x() > game.width() or
-        position.x() < 0 or
-        position.y() > game.height() or
-        position.y() < 0
     method initialize() {
+        tickId = id.nuevoId("proyectilGusano")
         image = "proyectilGusano.gif"
-        contador = contador + 1
-        tickId = tickId + contador.toString()
         direccionDisparo = arriba
     }
 }
 
 class ProyectilCaracol inherits Proyectil (personaje = caracol) {
-    var property contador = 0
-    var property tickId = "proyectilCaracol"
+    var property tickId
     override method serLanzado() {
         super()
         game.onCollideDo(self, { mago =>
-            if (mago.tieneVidas()) {mago.perderVida() }
+            if (mago.tieneVidas()) {mago.perderVida()}
             game.removeVisual(self)
+            game.removeTickEvent(tickId)
         })
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto()) {
-            self.position(direccionDisparo.siguiente(self.position()))
-        }
-        if ( self.estaFuera()) { 
+        super()
+        if (self.estaFuera()) { 
             game.removeVisual(self)
-            game.removeTickEvent("tickId")
+            game.removeTickEvent(tickId)
         }
     }
-    override method estaFuera() = 
-        position.x() > game.width() or
-        position.x() < 0 or
-        position.y() > game.height() or
-        position.y() < 0
     method initialize() {
+        tickId = id.nuevoId("proyectilCaracol")
         image = "proyectilCaracol.gif"
-        contador = contador + 1
-        tickId = tickId + contador.toString()
         direccionDisparo = caracol.direccion().siguienteCiclo()
     }
 }
 
 class ProyectilDemonio inherits Proyectil (personaje = demonio) {
-    var property contador = 0
-    var property tickId = "proyectilDemonio"
+    var property tickId
     override method serLanzado() {
         super()
         game.onCollideDo(self, { mago =>
             if (mago.tieneVidas()) {mago.perderVida() }
             game.removeVisual(self)
+            game.removeTickEvent(tickId)
         })
         game.onTick(350, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto()) {
-            self.position(direccionDisparo.siguiente(self.position()))
-        }
-        if ( self.estaFuera()) { 
+        super()
+        if (self.estaFuera()) { 
             game.removeVisual(self)
-            game.removeTickEvent("tickId")
+            game.removeTickEvent(tickId)
         }
     }
-    override method estaFuera() = 
-        position.x() > game.width() or
-        position.x() < 0 or
-        position.y() > game.height() or
-        position.y() < 0
     method initialize() {
+        tickId = id.nuevoId("proyectilDemonio")
         image = "proyectilDemonio.gif"
-        contador = contador + 1
-        tickId = tickId + contador.toString()
         direccionDisparo = demonio.direccion().siguienteCiclo()
     }
 }

@@ -8,6 +8,7 @@ import corazones.*
 class Visual {
     var property image
     var property position
+    method tieneVidas() = false
 }
 
 class Personaje inherits Visual {
@@ -24,7 +25,7 @@ class Personaje inherits Visual {
         if(self.puedeMoverseA(unaDireccion.siguiente(self.position()))) { direccion = unaDireccion }
     }
     method moverA(unaDireccion) {
-        if(!menuPausa.menuPausaAbierto()) {
+        if(!menuPausa.menuPausaAbierto() and !self.hayColumna(direccion.siguiente(self.position()))) {
             self.mirarA(unaDireccion)
             if (self.puedeMoverseA(unaDireccion.siguiente(self.position()))) {
                 self.position(unaDireccion.siguiente(self.position()))
@@ -38,7 +39,7 @@ class Personaje inherits Visual {
         direccion = izquierda
     }
     method estaMuerto() = vidas == 0
-    method tieneVidas() = vidas > 0
+    override method tieneVidas() = vidas > 0
 }
 
 
@@ -67,6 +68,7 @@ object mago inherits Personaje (direccion = abajo) {
     override method atacar() {
         if(!menuPausa.menuPausaAbierto()) {
             const proyectil = new ProyectilMago(enemigo = self.enemigo())
+            id.actualizarUltimoID()
             image = direccion.imageAtaque()
             game.sound("punch.wav").play()
             proyectil.serLanzado()
@@ -126,6 +128,7 @@ object gusano inherits Enemigo (direccion = izquierda) {
     override method atacar() {
         if(!menuPausa.menuPausaAbierto()) {
             const proyectil = new ProyectilGusano()
+            id.actualizarUltimoID()
             game.sound("punch.wav").play() // cambiar sonido 
             proyectil.serLanzado()
         }
@@ -181,6 +184,7 @@ object caracol inherits Enemigo (direccion = izquierda) {
     }
     override method atacar() {
         const proyectil = new ProyectilCaracol()
+        id.actualizarUltimoID()
         game.sound("punch.wav").play() // cambiar sonido 
         proyectil.serLanzado()
     }
@@ -228,6 +232,7 @@ object demonio inherits Enemigo (direccion = izquierda) {
         pos.y() <= 17
     override method atacar() {
         const proyectil = new ProyectilDemonio()
+        id.actualizarUltimoID()
         game.sound("punch.wav").play() // cambiar sonido 
         proyectil.serLanzado()
     }
@@ -254,3 +259,7 @@ object demonio inherits Enemigo (direccion = izquierda) {
         vidas = 5
     }
 }
+
+const columna1 = new Visual(image = "Columna1.png", position = game.at(15,15))
+const columna2 = new Visual(image = "Columna2.png", position = game.at(15,10))
+const columna3 = new Visual(image = "Columna3.png", position = game.at(15,5))
