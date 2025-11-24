@@ -48,7 +48,7 @@ object menuPausa inherits Menu {
     override method cerrar() {}
     override method configuracionTeclado() {
         keyboard.p().onPressDo({self.abrir()})
-        keyboard.m().onPressDo({ juegoPorNiveles.nivelActual().volverAlMenu()})
+        if(menuPausaAbierto){keyboard.m().onPressDo({ juegoPorNiveles.nivelActual().volverAlMenu()})}
     }
     method initialize(){
         self.configuracionTeclado()
