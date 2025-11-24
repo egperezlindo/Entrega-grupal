@@ -3,6 +3,7 @@ import movimientos.*
 import menus.*
 import config.*
 import proyectiles.*
+import corazones.*
 
 class Visual {
     var property image
@@ -12,28 +13,25 @@ class Visual {
 class Personaje inherits Visual {
     var property vidas
     var property direccion
-    method puedeMoverseA(pos) = not juegoPorNiveles.nivelActual().enemigoVivoEn(self.position()) 
+    method morir()
     method atacar()
-    method perderVida() { 
-        vidas = (vidas - 1).max(0)
-        if (self.estaMuerto()) { self.morir() }
-    }
+    method resetearVidas()
+    method resetearPosicion()
+    method mostrarCorazones()
+    method puedeMoverseA(pos) = !juegoPorNiveles.nivelActual().enemigoVivoEn(self.position()) and !self.hayColumna(direccion.siguiente(self.position()))
+    method perderVida() { vidas = (vidas - 1).max(0) }
     method mirarA(unaDireccion) {
-        if(self.puedeMoverseA(unaDireccion.siguiente(self.position()))) { 
-            direccion = unaDireccion
-        }
+        if(self.puedeMoverseA(unaDireccion.siguiente(self.position()))) { direccion = unaDireccion }
     }
     method moverA(unaDireccion) {
-        if(!menuPausa.menuPausaAbierto()){
+        if(!menuPausa.menuPausaAbierto()) {
             self.mirarA(unaDireccion)
-        if (self.puedeMoverseA(unaDireccion.siguiente(self.position()))) {
-            self.position(unaDireccion.siguiente(self.position()))
+            if (self.puedeMoverseA(unaDireccion.siguiente(self.position()))) {
+                self.position(unaDireccion.siguiente(self.position()))
+            }
         }
     }
-        
-    }
-    method resetearPosicion()
-    method resetearVidas()
+    method hayColumna(pos) = juegoPorNiveles.nivelActual().columnas().any({c => c.position() == pos})
     method resetear() { 
         self.resetearPosicion() 
         self.resetearVidas()
@@ -41,11 +39,13 @@ class Personaje inherits Visual {
     }
     method estaMuerto() = vidas == 0
     method tieneVidas() = vidas > 0
-    method morir()
 }
 
 
 object mago inherits Personaje (direccion = abajo) {
+    var indice = 0
+    const property corazones = [corazonM1, corazonM2, corazonM3]
+    const property corazonesVacios = [corazonVacioM1, corazonVacioM2, corazonVacioM3]
     var property enemigo = juegoPorNiveles.nivelActual().enemigo()
     method posicionDeAtaque() = direccion.siguiente(self.position())
     method configuracionTeclado() {
@@ -57,12 +57,7 @@ object mago inherits Personaje (direccion = abajo) {
             keyboard.f().onPressDo({self.atacar()})
         }
     }
-    override method puedeMoverseA(pos) =
-        super(pos) &&
-        pos.x() >= 1 &&
-        pos.y() >= 1 &&
-        pos.x() < 18 &&
-        pos.y() < 18
+    override method puedeMoverseA(pos) = super(pos) && juegoPorNiveles.nivelActual().puedeMoverseA(pos)
     override method mirarA(unaDireccion) {
         super(unaDireccion)
         image = direccion.imageMago()  
@@ -78,6 +73,14 @@ object mago inherits Personaje (direccion = abajo) {
         }
     }
     override method morir() { juegoPorNiveles.nivelActual().volverAlMenu() }
+    override method perderVida() {
+        super()
+        game.removeVisual(corazones.get(indice))
+        game.addVisual(corazonesVacios.get(indice))
+        indice += 1
+        if (self.estaMuerto()) { self.morir() }
+    }
+    override method mostrarCorazones() { corazones.forEach({c => game.addVisual(c)}) }
     method initialize() {
         image = direccion.imageMago()
         position = juegoPorNiveles.nivelActual().posicionMago()
@@ -91,7 +94,10 @@ class Enemigo inherits Personaje {
     method invertirDireccion()
 }
 
-object gusano inherits Enemigo (direccion = izquierda) { // ES DE PRUEBA LA ESTÃ‰TICA DEL ENEMIGO
+object gusano inherits Enemigo (direccion = izquierda) {
+    var indice = 0
+    const property corazones = [corazonG1, corazonG2, corazonG3]
+    const property corazonesVacios = [corazonVacioG1, corazonVacioG2, corazonVacioG3]
     override method comboEnemigo() { 
         game.onTick(750, "movimientoGusano", { self.moverseEnemigo() }) 
         game.onTick(1500, "ataqueGusano", { self.atacar() })
@@ -124,14 +130,17 @@ object gusano inherits Enemigo (direccion = izquierda) { // ES DE PRUEBA LA ESTÃ
             proyectil.serLanzado()
         }
     }
-    override method resetearPosicion() {
-        position = game.at(8, 3) // IR VIENDO DE AJUSTAR ESTO SEGUN ESCENARIO, lo ideal serÃ­a q aparezca en el medio, o en el medio arriba
-        // puede tener la clase personaje una posicion inicial para ahorrarnos esto!
-    }
-    override method resetearVidas() {
-        vidas = 3
+    override method resetearPosicion() { position = game.at(8, 3) }
+    override method resetearVidas() { vidas = 3 }
+    override method perderVida() {
+        super()
+        game.removeVisual(corazones.get(indice))
+        game.addVisual(corazonesVacios.get(indice))
+        indice += 1
+        if (self.estaMuerto()) { self.morir() }
     }
     override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
+    override method mostrarCorazones() { corazones.forEach({c => game.addVisual(c)}) }
     method initialize() {
         image = direccion.imageGusano()
         position = game.at(8, 3)
@@ -140,6 +149,9 @@ object gusano inherits Enemigo (direccion = izquierda) { // ES DE PRUEBA LA ESTÃ
 }
 
 object caracol inherits Enemigo (direccion = izquierda) {
+    var indice = 0
+    const property corazones = [corazonC1, corazonC2, corazonC3, corazonC4]
+    const property corazonesVacios = [corazonVacioC1, corazonVacioC2, corazonVacioC3, corazonVacioC4]
     override method comboEnemigo() { 
         game.onTick(650, "movimientoCaracol", { self.moverseEnemigo() }) 
         game.onTick(1500, "ataqueCaracol", { self.atacar() })
@@ -172,13 +184,17 @@ object caracol inherits Enemigo (direccion = izquierda) {
         game.sound("punch.wav").play() // cambiar sonido 
         proyectil.serLanzado()
     }
-    override method resetearPosicion() {
-        position = game.at(8, 3)
+    override method perderVida() {
+        super()
+        game.removeVisual(corazones.get(indice))
+        game.addVisual(corazonesVacios.get(indice))
+        indice += 1
+        if (self.estaMuerto()) { self.morir() }
     }
-    override method resetearVidas() {
-        vidas = 4
-    }
+    override method resetearPosicion() { position = game.at(8, 3) }
+    override method resetearVidas() { vidas = 4 }
     override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
+    override method mostrarCorazones() { corazones.forEach({c => game.addVisual(c)}) }
     method initialize() {
         image = direccion.imageCaracol()
         position = game.at(8, 3)
@@ -187,6 +203,9 @@ object caracol inherits Enemigo (direccion = izquierda) {
 }
 
 object demonio inherits Enemigo (direccion = izquierda) {
+    var indice = 0
+    const property corazones = [corazonD1, corazonD2, corazonD3, corazonD4, corazonD5]
+    const property corazonesVacios = [corazonVacioD1, corazonVacioD2, corazonVacioD3, corazonVacioD4, corazonVacioD5]
     override method comboEnemigo() { 
         game.onTick(500, "movimientoDemonio", { self.moverseEnemigo() }) 
         game.onTick(1500, "ataqueDemonio", { self.atacar() })
@@ -218,13 +237,17 @@ object demonio inherits Enemigo (direccion = izquierda) {
             image = unaDireccion.imageDragon() // ojo
         }
     }
-    override method resetearPosicion() {
-        position = game.at(8, 3)
+    override method perderVida() {
+        super()
+        game.removeVisual(corazones.get(indice))
+        game.addVisual(corazonesVacios.get(indice))
+        indice += 1
+        if (self.estaMuerto()) { self.morir() }
     }
-    override method resetearVidas() {
-        vidas = 5
-    }
+    override method resetearPosicion() { position = game.at(8, 3) }
+    override method resetearVidas() { vidas = 5 }
     override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
+    override method mostrarCorazones() { corazones.forEach({c => game.addVisual(c)}) }
     method initialize() {
         image = direccion.imageDemonio()
         position = game.at(8, 3)

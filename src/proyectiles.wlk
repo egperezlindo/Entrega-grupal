@@ -9,8 +9,9 @@ class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
     method moverseRecto()
-    method tieneVidas() = false
     method estaFuera()
+    method tieneVidas() = false
+    method hayColumna(pos) = juegoPorNiveles.nivelActual().columnas().any({c => c.position() == pos})
 }
 
 class ProyectilMago inherits Proyectil (personaje = mago) {
@@ -21,12 +22,13 @@ class ProyectilMago inherits Proyectil (personaje = mago) {
         super()
         game.onCollideDo(self, { enemigo =>
             if (enemigo.tieneVidas()) { enemigo.perderVida() }
-            game.removeVisual(self)
+            game.removeVisual(image)
         })
-        game.onTick(350, tickId, {self.moverseRecto()})
+            if(!enemigo.tieneVidas()) {self.moverseRecto()} //esto debería resolver el tema del que mago se coma sus propios proyectiles
+            game.onTick(225, tickId, {self.moverseRecto()}) //si es necesario puede volverse a la normalidad
     }
     override method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto()) {
+        if(!menuPausa.menuPausaAbierto() and !self.hayColumna(direccionDisparo.siguiente(self.position()))) {
             self.position(direccionDisparo.siguiente(self.position()))
         }
         if (self.estaFuera()) { 
