@@ -10,22 +10,28 @@ class Menu inherits Visual {
 }
 
 object menuInicio inherits Menu{
-    const property musicaMenu = musicaDeFondo
+    var property musica = musicaDeFondo
     var property menuInicioAbierto = false 
-    override method abrir() { 
+    override method abrir() {
+        musica.play()
         menuInicioAbierto = true
         game.addVisual(self)
         self.configuracionTeclado()
         menuPausa.initialize()
     }
-    override method configuracionTeclado() { keyboard.space().onPressDo({self.cerrar()}) }
+    override method configuracionTeclado() {
+        keyboard.space().onPressDo({self.cerrar()})
+        if(menuInicioAbierto) {keyboard.c().onPressDo({ menuControles.abrir()})}
+        }
     override method cerrar() {
         menuInicioAbierto = false
         game.removeVisual(self)
+        musica.stop()
         juegoPorNiveles.nivelActual().iniciarNivel()
     }
     method initialize() {
-        image = "inicio.jpeg"
+        musica = musicaDeFondo
+        image = "inicio.jpg"
         position = game.at(0,0)
     }
 }
@@ -47,8 +53,9 @@ object menuPausa inherits Menu {
     }
     override method cerrar() {}
     override method configuracionTeclado() {
-        keyboard.p().onPressDo({self.abrir()})
+        if(!menuInicio.menuInicioAbierto())keyboard.p().onPressDo({self.abrir()})
         if(menuPausaAbierto){keyboard.m().onPressDo({ juegoPorNiveles.nivelActual().volverAlMenu()})}
+        if(menuPausaAbierto){keyboard.c().onPressDo({ menuControles.abrir()})}
     }
     method initialize(){
         self.configuracionTeclado()
@@ -89,15 +96,25 @@ object menuPerdedor inherits Menu (image = "menuReiniciar.png", position = game.
 }
 
 object menuControles inherits Menu { 
-    override method abrir() { 
-        game.addVisual(self)
-        self.configuracionTeclado()
+    var property menuControlesAbierto = false
+    override method abrir() {
+        if(!menuControlesAbierto and menuPausa.menuPausaAbierto()){
+            menuControlesAbierto = true
+            game.addVisual(self)
+            self.configuracionTeclado()
+        }
+        else if(!menuControlesAbierto and menuInicio.menuInicioAbierto()){
+            menuControlesAbierto = true
+            game.addVisual(self)
+            self.configuracionTeclado()
+        }
+        else{
+            menuControlesAbierto = false
+            game.removeVisual(self)
+        }
     }
-    override method configuracionTeclado() { keyboard.space().onPressDo({self.cerrar()}) }
-    override method cerrar() {
-        game.removeVisual(self)
-        menuPausa.abrir() // chequear si los controles se ven al inicio en la pausa, o en las dos
-    }
+    override method configuracionTeclado() { keyboard.c().onPressDo({self.abrir()}) }
+    override method cerrar() {}
     method initialize() {
         image = "controles.png"
         position = game.at(0,0)

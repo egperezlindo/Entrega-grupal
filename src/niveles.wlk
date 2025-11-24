@@ -14,6 +14,7 @@ class Nivel inherits Visual (position = game.origin()) {
       game.clear()
       iniciado = true
       menuPausa.configuracionTeclado()
+      menuControles.configuracionTeclado()
       game.addVisual(self)
       self.musica().play()
       mago.resetear()
@@ -52,7 +53,7 @@ object nivelDos inherits Nivel {
     enemigo = caracol
     pantalla = pantallaDos
     image = "escenarioDos.png"
-    musica = musicaNivel1 // cambiar
+    musica = musicaNivel2
   }
 }
 
@@ -61,6 +62,6 @@ object nivelTres inherits Nivel {
     enemigo = demonio
     pantalla = pantallaTres
     image = "escenarioTres.png"
-    musica = musicaNivel1 // cambiar
+    musica = musicaNivel3
   }
 }

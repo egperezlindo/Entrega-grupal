@@ -35,15 +35,31 @@ class Musica {
 object musicaDeFondo inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("afterDark.mp3")
-        archivo = "MenuMBM.MP3"
+        sonido = game.sound("MBMenu.mp3")
+        archivo = "MBMenu.MP3"
     }
 }
 
 object musicaNivel1 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("afterDark.mp3")
+        sonido = game.sound("MB1.mp3")
         archivo = "MB1.mp3"
+    }
+}
+
+object musicaNivel2 inherits Musica {
+    method initialize() {
+        estado = false
+        sonido = game.sound("MB2.mp3")
+        archivo = "MB2.mp3"
+    }
+}
+
+object musicaNivel3 inherits Musica {
+    method initialize() {
+        estado = false
+        sonido = game.sound("MB3.mp3")
+        archivo = "MB3.mp3"
     }
 }
