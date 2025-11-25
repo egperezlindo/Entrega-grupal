@@ -1,5 +1,6 @@
 /*
 ARREGLAR:
+- vida al reiniciar el juego (desde el menu de pausa)
 - proyectiles del caracol y demonio deben cambiar de posición antes que él
 - arreglar posiciones de los pinchos y columnas
 - completar el archivo con testeos válidos
