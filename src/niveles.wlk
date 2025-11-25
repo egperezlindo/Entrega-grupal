@@ -40,18 +40,15 @@ class Nivel inherits Visual (position = game.origin()) {
   }
     method estaGanado() = enemigo.estaMuerto()
     method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
-    method posicionMago() = game.at(8,9)
-    method puedeMoverseA(pos)
+    method puedeMoverseA(pos) = 
+      pos.x() > 3 &&
+      pos.y() > 4 &&
+      pos.x() < 15 &&
+      pos.y() < 16
     method agregarColumnas()
 }
 
 object nivelUno inherits Nivel {
-  override method posicionMago() = game.at(8,17)
-  override method puedeMoverseA(pos) = 
-    pos.x() > 3 &&
-    pos.y() > 3 &&
-    pos.x() < 17 &&
-    pos.y() < 17
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {
     enemigo = gusano 
@@ -64,11 +61,6 @@ object nivelUno inherits Nivel {
 
 object nivelDos inherits Nivel {
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
-  override method puedeMoverseA(pos) = 
-    pos.x() > 3 &&
-    pos.y() > 3 &&
-    pos.x() < 17 &&
-    pos.y() < 17
   method initialize() {
     enemigo = caracol
     pantalla = pantallaDos
@@ -80,11 +72,6 @@ object nivelDos inherits Nivel {
 
 object nivelTres inherits Nivel {
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
-  override method puedeMoverseA(pos) = 
-    pos.x() > 3 &&
-    pos.y() > 3 &&
-    pos.x() < 17 &&
-    pos.y() < 17
   method initialize() {
     enemigo = demonio
     pantalla = pantallaTres

@@ -21,11 +21,13 @@ class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje
     method hayColumna(pos) = juegoPorNiveles.nivelActual().columnas().any({c => c.position() == pos})
 }
 
-object id { // podría hacerse uno por proyectil para reducir todavía más el lag (creo)
+class ID { // es uno por enemigo para evitar lag
     var ultimoId = 0
     method nuevoId(unID) = unID + ultimoId.toString()
     method actualizarUltimoID() { ultimoId = ultimoId + 1 }
 }
+
+const idMago = new ID()
 
 class ProyectilMago inherits Proyectil (personaje = mago) {
     var property tickId
@@ -46,11 +48,13 @@ class ProyectilMago inherits Proyectil (personaje = mago) {
         }
     }
     method initialize() {
-        tickId = id.nuevoId("proyectilMago")
+        tickId = idMago.nuevoId("proyectilMago")
         direccionDisparo = personaje.direccion()
         image = "proyectilMago.gif"
     }
 }
+
+const idGusano = new ID()
 
 class ProyectilGusano inherits Proyectil (personaje = gusano) {
     var property tickId
@@ -71,11 +75,13 @@ class ProyectilGusano inherits Proyectil (personaje = gusano) {
         }
     }
     method initialize() {
-        tickId = id.nuevoId("proyectilGusano")
+        tickId = idGusano.nuevoId("proyectilGusano")
         image = "proyectilGusano.gif"
         direccionDisparo = arriba
     }
 }
+
+const idCaracol = new ID()
 
 class ProyectilCaracol inherits Proyectil (personaje = caracol) {
     var property tickId
@@ -96,11 +102,13 @@ class ProyectilCaracol inherits Proyectil (personaje = caracol) {
         }
     }
     method initialize() {
-        tickId = id.nuevoId("proyectilCaracol")
+        tickId = idCaracol.nuevoId("proyectilCaracol")
         image = "proyectilCaracol.gif"
         direccionDisparo = caracol.direccion().siguienteCiclo()
     }
 }
+
+const idDemonio = new ID()
 
 class ProyectilDemonio inherits Proyectil (personaje = demonio) {
     var property tickId
@@ -121,7 +129,7 @@ class ProyectilDemonio inherits Proyectil (personaje = demonio) {
         }
     }
     method initialize() {
-        tickId = id.nuevoId("proyectilDemonio")
+        tickId = idDemonio.nuevoId("proyectilDemonio")
         image = "proyectilDemonio.gif"
         direccionDisparo = demonio.direccion().siguienteCiclo()
     }
