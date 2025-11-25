@@ -65,7 +65,7 @@ class ProyectilGusano inherits Proyectil (personaje = gusano) {
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         })
-        game.onTick(350, tickId, {self.moverseRecto()})
+        game.onTick(300, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()
@@ -92,7 +92,7 @@ class ProyectilCaracol inherits Proyectil (personaje = caracol) {
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         })
-        game.onTick(350, tickId, {self.moverseRecto()})
+        game.onTick(225, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()
@@ -119,7 +119,7 @@ class ProyectilDemonio inherits Proyectil (personaje = demonio) {
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         })
-        game.onTick(350, tickId, {self.moverseRecto()})
+        game.onTick(175, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()

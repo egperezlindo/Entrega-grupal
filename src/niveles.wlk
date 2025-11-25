@@ -28,6 +28,7 @@ class Nivel inherits Visual (position = game.origin()) {
       enemigo.mostrarCorazones()
       enemigo.comboEnemigo()
       self.agregarColumnas()
+      self.agregarPinchos()
     }
     method volverAlMenu() {
     iniciado = false
@@ -37,6 +38,9 @@ class Nivel inherits Visual (position = game.origin()) {
     juegoPorNiveles.indice(0)
     menuPausa.menuPausaAbierto(false)
     menuInicio.abrir()
+    mago.resetearVidas()
+    enemigo.resetearVidas()
+    self.agregarPinchos()
   }
     method estaGanado() = enemigo.estaMuerto()
     method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
@@ -46,9 +50,16 @@ class Nivel inherits Visual (position = game.origin()) {
       pos.x() < 15 &&
       pos.y() < 16
     method agregarColumnas()
+    method agregarPinchos()
 }
 
 object nivelUno inherits Nivel {
+  override method agregarPinchos() { 
+    // hay que hacer que este pincho salga cada x cantidad de segundos dif a los otros niveles
+    const pincho = new Pincho()
+    game.addVisual(pincho)
+    pincho.pinchoAparece()
+  }
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {
     enemigo = gusano 
@@ -60,6 +71,11 @@ object nivelUno inherits Nivel {
 }
 
 object nivelDos inherits Nivel {
+  override method agregarPinchos() {
+    const pincho = new Pincho()
+    game.addVisual(pincho)
+    pincho.pinchoAparece()
+  }
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {
     enemigo = caracol
@@ -71,6 +87,10 @@ object nivelDos inherits Nivel {
 }
 
 object nivelTres inherits Nivel {
+  override method agregarPinchos() {
+    const pincho = new Pincho()
+    pincho.pinchoAparece()
+  }
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {
     enemigo = demonio
