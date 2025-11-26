@@ -28,19 +28,19 @@ class Nivel inherits Visual (position = game.origin()) {
       enemigo.mostrarCorazones()
       enemigo.comboEnemigo()
       self.agregarColumnas()
-      self.agregarPinchos()
+      self.agregarPincho()
     }
     method volverAlMenu() {
     iniciado = false
     musica.reanudar()
     musica.stop()
     game.clear()
-    juegoPorNiveles.indice(0)
-    menuPausa.menuPausaAbierto(false)
-    menuInicio.abrir()
     mago.resetearVidas()
     enemigo.resetearVidas()
-    self.agregarPinchos()
+    juegoPorNiveles.indice(0)
+    menuPausa.abierto(false)
+    menuInicio.abrir()
+    
   }
     method estaGanado() = enemigo.estaMuerto()
     method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
@@ -50,15 +50,14 @@ class Nivel inherits Visual (position = game.origin()) {
       pos.x() < 15 &&
       pos.y() < 16
     method agregarColumnas()
-    method agregarPinchos()
+    method agregarPincho()
 }
 
 object nivelUno inherits Nivel {
-  override method agregarPinchos() { 
-    // hay que hacer que este pincho salga cada x cantidad de segundos dif a los otros niveles
-    const pincho = new Pincho()
-    game.addVisual(pincho)
-    pincho.pinchoAparece()
+  override method agregarPincho() {
+    const pincho = new Pincho(segundos = 5000)
+    idPincho.actualizarUltimoID()
+    pincho.aparece()
   }
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {
@@ -71,10 +70,10 @@ object nivelUno inherits Nivel {
 }
 
 object nivelDos inherits Nivel {
-  override method agregarPinchos() {
-    const pincho = new Pincho()
-    game.addVisual(pincho)
-    pincho.pinchoAparece()
+  override method agregarPincho() {
+    const pincho = new Pincho(segundos = 3000)
+    idPincho.actualizarUltimoID()
+    pincho.aparece()
   }
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {
@@ -87,9 +86,10 @@ object nivelDos inherits Nivel {
 }
 
 object nivelTres inherits Nivel {
-  override method agregarPinchos() {
-    const pincho = new Pincho()
-    pincho.pinchoAparece()
+  override method agregarPincho() {
+    const pincho = new Pincho(segundos = 2000)
+    idPincho.actualizarUltimoID()
+    pincho.aparece()
   }
   override method agregarColumnas() { columnas.forEach({c => game.addVisual(c)}) }
   method initialize() {

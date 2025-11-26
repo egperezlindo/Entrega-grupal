@@ -11,20 +11,20 @@ class Menu inherits Visual {
 
 object menuInicio inherits Menu{
     var property musica = musicaDeFondo
-    var property menuInicioAbierto = false 
+    var property abierto = false 
     override method abrir() {
         musica.play()
-        menuInicioAbierto = true
+        abierto = true
         game.addVisual(self)
         self.configuracionTeclado()
         menuPausa.initialize()
     }
     override method configuracionTeclado() {
         keyboard.space().onPressDo({self.cerrar()})
-        if(menuInicioAbierto) {keyboard.c().onPressDo({ menuControles.abrir()})}
+        if(abierto) {keyboard.c().onPressDo({ menuControles.abrir()})}
         }
     override method cerrar() {
-        menuInicioAbierto = false
+        abierto = false
         game.removeVisual(self)
         musica.stop()
         juegoPorNiveles.nivelActual().iniciarNivel()
@@ -37,25 +37,25 @@ object menuInicio inherits Menu{
 }
 
 object menuPausa inherits Menu {
-    var property menuPausaAbierto = false 
+    var property abierto = false 
     override method abrir() { 
-        if(!menuPausaAbierto) {
-            menuPausaAbierto = true
+        if(!abierto) {
+            abierto = true
             game.addVisual(self)
             juegoPorNiveles.nivelActual().musica().pausar()
             self.configuracionTeclado()
         }
         else{
-            menuPausaAbierto = false
+            abierto = false
             game.removeVisual(self)
             juegoPorNiveles.nivelActual().musica().reanudar()
         }
     }
     override method cerrar() {}
     override method configuracionTeclado() {
-        if(!menuInicio.menuInicioAbierto())keyboard.p().onPressDo({self.abrir()})
-        if(menuPausaAbierto){keyboard.m().onPressDo({ juegoPorNiveles.nivelActual().volverAlMenu()})}
-        if(menuPausaAbierto){keyboard.c().onPressDo({ menuControles.abrir()})}
+        if(!menuInicio.abierto())keyboard.p().onPressDo({self.abrir()})
+        if(abierto){keyboard.m().onPressDo({ juegoPorNiveles.nivelActual().volverAlMenu()})}
+        if(abierto){keyboard.c().onPressDo({ menuControles.abrir()})}
     }
     method initialize(){
         self.configuracionTeclado()
@@ -98,12 +98,12 @@ object menuPerdedor inherits Menu (image = "menuReiniciar.png", position = game.
 object menuControles inherits Menu { 
     var property menuControlesAbierto = false
     override method abrir() {
-        if(!menuControlesAbierto and menuPausa.menuPausaAbierto()){
+        if(!menuControlesAbierto and menuPausa.abierto()){
             menuControlesAbierto = true
             game.addVisual(self)
             self.configuracionTeclado()
         }
-        else if(!menuControlesAbierto and menuInicio.menuInicioAbierto()){
+        else if(!menuControlesAbierto and menuInicio.abierto()){
             menuControlesAbierto = true
             game.addVisual(self)
             self.configuracionTeclado()

@@ -9,7 +9,7 @@ class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
     method moverseRecto() {
-        if(!menuPausa.menuPausaAbierto()) {
+        if(!menuPausa.abierto()) {
             self.position(direccionDisparo.siguiente(self.position()))
         }
     }
