@@ -1,5 +1,6 @@
 import menus.*
 import config.*
+import niveles.*
 import corazones.*
 import movimientos.*
 import proyectiles.*
@@ -24,7 +25,7 @@ class Personaje inherits Visual {
         pos.x() < 15 &&
         pos.y() < 16 &&
         !juegoPorNiveles.nivelActual().enemigoVivoEn(self.position()) &&
-        !self.hayColumna(pos)
+        !self.columnaBloquea(pos)
     method perderVida() { vidas = (vidas - 1).max(0) }
     method mirarA(unaDireccion) { direccion = unaDireccion }
     method moverA(unaDireccion) {
@@ -36,7 +37,7 @@ class Personaje inherits Visual {
             else { direccion = unaDireccion }
         }
     }
-    method hayColumna(pos) = juegoPorNiveles.nivelActual().columnas().any({c => c.position() == pos})
+    method columnaBloquea(pos) = juegoPorNiveles.nivelActual().columnas().any({ c => c.bloqueaAlMago(pos) })
     method resetear() { 
         self.resetearPosicion() 
         direccion = izquierda
@@ -65,7 +66,7 @@ object mago inherits Personaje (direccion = abajo) {
         super(unaDireccion)
         image = direccion.imageMago()  
     }
-    override method resetearPosicion() { position = game.at(8,9) }
+    override method resetearPosicion() { position = game.at(4,14) }
     override method resetearVidas() { 
         super()
         self.mostrarCorazones()
@@ -97,7 +98,7 @@ object mago inherits Personaje (direccion = abajo) {
     }
     method initialize() {
         image = direccion.imageMago()
-        position = game.at(8,9)
+        position = game.at(4,14)
         vidas = 3
     }
 }
@@ -302,10 +303,6 @@ object demonio inherits Enemigo (direccion = izquierda) {
     }
 }
 
-const columna1 = new Visual(image = "columna.png", position = game.at(11,10))
-const columna2 = new Visual(image = "columna.png", position = game.at(7,11))
-const columna3 = new Visual(image = "columna.png", position = game.at(9,4))
-
 class Pincho inherits Visual (position = game.center()) {
   var property segundos 
   var property tickId
@@ -315,7 +312,10 @@ class Pincho inherits Visual (position = game.center()) {
         const x = 5.randomUpTo(15).truncate(0)
         const y = 5.randomUpTo(15).truncate(0)
         position = game.at(x,y)
-        game.addVisual(self)
+        if (!self.columnaBloquea(position)) {
+           game.addVisual(self) 
+        }
+        
     } 
   }
   method ponerse() {
@@ -326,6 +326,7 @@ class Pincho inherits Visual (position = game.center()) {
     game.addVisual(self)
     self.ponerse()
   }
+  method columnaBloquea(pos) = juegoPorNiveles.nivelActual().columnas().any({ c => c.bloqueaAlPincho(pos) })
   method initialize() {
     tickId = idPincho.nuevoId("movPincho")
     image = "spikes.gif"

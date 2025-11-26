@@ -24,6 +24,7 @@ object menuInicio inherits Menu {
         if(abierto) {keyboard.c().onPressDo({ menuControles.abrir()})}
         }
     override method cerrar() {
+        game.sound("open.wav")
         abierto = false
         game.removeVisual(self)
         musica.stop()
@@ -38,12 +39,14 @@ object menuInicio inherits Menu {
 object menuPausa inherits Menu () {
     var property abierto = false 
     override method abrir() { 
+        game.sound("pause.wav")
         if(!abierto) {
             abierto = true
             game.addVisual(self)
             juegoPorNiveles.nivelActual().musica().pausar()
             self.configuracionTeclado()
         } else {
+            game.sound("close.wav")
             abierto = false
             game.removeVisual(self)
             juegoPorNiveles.nivelActual().musica().reanudar()
@@ -114,11 +117,13 @@ object menuControles inherits Menu (image = "controles.png", position = game.at(
     var property abierto = false
     override method abrir() {
         if(!abierto and menuPausa.abierto()){
+            game.sound("pause.wav")
             abierto = true
             game.addVisual(self)
             self.configuracionTeclado()
         }
         else if(!abierto and menuInicio.abierto()){
+            game.sound("close.wav")
             abierto = true
             game.addVisual(self)
             self.configuracionTeclado()
