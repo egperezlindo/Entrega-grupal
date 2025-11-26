@@ -1,17 +1,15 @@
-import wollok.game.*
-import movimientos.*
 import menus.*
 import config.*
 import visuales.*
+import movimientos.*
+import wollok.game.*
 
 class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje.position())) {
     var property personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
     method moverseRecto() {
-        if(!menuPausa.abierto()) {
-            self.position(direccionDisparo.siguiente(self.position()))
-        }
+        if(!menuPausa.abierto()) { self.position(direccionDisparo.siguiente(self.position())) }
     }
     method estaFuera() = 
         position.x() > game.width() or
@@ -38,7 +36,7 @@ class ProyectilMago inherits Proyectil (personaje = mago) {
             if (enemigo.tieneVidas()) {enemigo.perderVida() }
             game.removeVisual(self)
         })
-        game.onTick(350, tickId, {self.moverseRecto()})
+        game.onTick(250, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()
@@ -65,7 +63,7 @@ class ProyectilGusano inherits Proyectil (personaje = gusano) {
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         })
-        game.onTick(300, tickId, {self.moverseRecto()})
+        game.onTick(250, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()
@@ -92,7 +90,7 @@ class ProyectilCaracol inherits Proyectil (personaje = caracol) {
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         })
-        game.onTick(225, tickId, {self.moverseRecto()})
+        game.onTick(200, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()
@@ -119,7 +117,7 @@ class ProyectilDemonio inherits Proyectil (personaje = demonio) {
             game.removeVisual(self)
             game.removeTickEvent(tickId)
         })
-        game.onTick(175, tickId, {self.moverseRecto()})
+        game.onTick(150, tickId, {self.moverseRecto()})
     }
     override method moverseRecto() {
         super()

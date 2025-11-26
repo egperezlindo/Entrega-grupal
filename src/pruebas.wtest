@@ -1,0 +1,35 @@
+import menus.*
+import config.*
+import musica.*
+import niveles.*
+import visuales.*
+import corazones.*
+import movimientos.*
+import proyectiles.*
+import wollok.game.*
+
+describe "Tests de niveles" {
+    method initialize() { juegoPorNiveles.iniciarJuego() }
+    test "El primer nivel al iniciar es el nivel uno" { 
+        assert.equals(nivelUno, juegoPorNiveles.nivelActual()) 
+    }
+    test "Ahora el nivel es el dos por el cambio de índice" {
+        juegoPorNiveles.indice(1)
+        assert.equals(nivelDos, juegoPorNiveles.nivelActual()) 
+    }
+    test "Ahora el nivel es el dos porque el nivel uno ya se ganó, el gusano murió" {
+        gusano.perderVida()
+        gusano.perderVida()
+        gusano.perderVida()
+        assert.that(gusano.estaMuerto())
+        assert.that(nivelUno.estaGanado())
+        assert.equals(nivelDos, juegoPorNiveles.nivelActual()) 
+    }
+    /*
+    test "Cuando no quedan niveles porque ya se ganaron, abre el menu ganador" {
+        assert.notThat(menuGanador.abierto())
+        demonio.morir()
+        assert.that(menuGanador.abierto())
+    }
+    */
+}

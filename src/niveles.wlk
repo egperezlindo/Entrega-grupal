@@ -1,12 +1,14 @@
-import wollok.game.*
-import visuales.*
 import menus.*
-import corazones.*
-import movimientos.*
 import config.*
 import musica.*
+import visuales.*
+import corazones.*
+import movimientos.*
+import proyectiles.*
+import wollok.game.*
 
 class Nivel inherits Visual (position = game.origin()) {
+  const enemigos = [gusano, caracol, demonio]
   var property enemigo
   var property pantalla
   var property musica 
@@ -32,11 +34,10 @@ class Nivel inherits Visual (position = game.origin()) {
     }
     method volverAlMenu() {
     iniciado = false
-    musica.reanudar()
     musica.stop()
     game.clear()
     mago.resetearVidas()
-    enemigo.resetearVidas()
+    enemigos.forEach({e => e.resetearVidas()})
     juegoPorNiveles.indice(0)
     menuPausa.abierto(false)
     menuInicio.abrir()
@@ -44,11 +45,6 @@ class Nivel inherits Visual (position = game.origin()) {
   }
     method estaGanado() = enemigo.estaMuerto()
     method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
-    method puedeMoverseA(pos) = 
-      pos.x() > 3 &&
-      pos.y() > 4 &&
-      pos.x() < 15 &&
-      pos.y() < 16
     method agregarColumnas()
     method agregarPincho()
 }

@@ -14,14 +14,17 @@ class Musica {
         }
     }
     method pausar() { if(estado) { sonido.pause() } }
-    method reanudar() { if (estado) {sonido.resume() } }
+    method reanudar() {
+    if (estado && sonido != null) {
+        sonido.resume()
+    }
+}
     method stop() {
         if(estado) {
             estado = false
             sonido.stop()
         }
     }
-
     method reiniciar() {
         estado = true
         sonido = game.sound(archivo)
@@ -43,23 +46,39 @@ object musicaDeFondo inherits Musica {
 object musicaNivel1 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("MB1.mp3")
-        archivo = "MB1.mp3"
+        sonido = game.sound("clintEastwood.mp3")
+        archivo = "clintEastwood.mp3"
     }
 }
 
 object musicaNivel2 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("MB2.mp3")
-        archivo = "MB2.mp3"
+        sonido = game.sound("clintEastwood.mp3")
+        archivo = "clintEastwood.mp3"
     }
 }
 
 object musicaNivel3 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("MB3.mp3")
-        archivo = "MB3.mp3"
+        sonido = game.sound("clintEastwood.mp3")
+        archivo = "clintEastwood.mp3"
+    }
+}
+
+object musicaGanadora inherits Musica {
+    method initialize() {
+        estado = false
+        sonido = game.sound("memoryReboot.mp3")
+        archivo = "memoryReboot.mp3"
+    }
+}
+
+object musicaPerdedora inherits Musica {
+    method initialize() {
+        estado = false
+        sonido = game.sound("afterDark.mp3")
+        archivo = "afterDark.mp3"
     }
 }

@@ -1,5 +1,5 @@
-import wollok.game.*
 import visuales.*
+import wollok.game.*
 
 // corazones del mago
 const corazonM1 = new Visual(image = "corazonLleno.png", position = game.at(16,19))
