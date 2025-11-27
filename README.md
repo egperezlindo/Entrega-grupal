@@ -1,3 +1,4 @@
+<div style = "text-align: center; width: 100%;">
 <section align = "center" id = "Presentacion">
     <img src="dungeons.gif" width="500px" />
 </section>
@@ -86,9 +87,10 @@
 <section align = "center", id="datos">
     <h1 align = "center"> Datos </h1> 
     <p>
-    
+
     • Versión: 1.0.2
     • Repositorio público
     • Universidad Nacional de Hurlingham
 </p>
 </section>
+</div>
