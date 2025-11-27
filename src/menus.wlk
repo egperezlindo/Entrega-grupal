@@ -68,7 +68,7 @@ object menuPausa inherits Menu () {
     }
 }
 
-object menuGanador inherits Menu (image = "ganar.jpeg", position = game.at(0,0)) {
+object menuGanador inherits Menu (image = "ganaste.jpg", position = game.at(0,0)) {
     var property abierto = false 
     var property musica = musicaGanadora
     override method abrir() {
@@ -93,7 +93,7 @@ object menuGanador inherits Menu (image = "ganar.jpeg", position = game.at(0,0))
     }
 }
 
-object menuPerdedor inherits Menu (image = "perder.png", position = game.at(0,0)) {
+object menuPerdedor inherits Menu (image = "perdiste.jpg", position = game.at(0,0)) {
     var property abierto = false 
     var property musica = musicaPerdedora
     override method abrir() {
@@ -118,7 +118,7 @@ object menuPerdedor inherits Menu (image = "perder.png", position = game.at(0,0)
     }
 }
 
-object menuControles inherits Menu (image = "controles.jpg", position = game.at(0,0)){ 
+object menuControles inherits Menu (image = "controles.png", position = game.at(0,0)) { 
     var property abierto = false
     override method abrir() {
         if(!abierto and menuPausa.abierto()){
