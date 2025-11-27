@@ -1,7 +1,7 @@
 <style>
     .centrado { 
         text-align: center; 
-        max-width: 700px; 
+        max-width: 900px; 
         margin: 0 auto;
     }
 </style>
@@ -14,13 +14,12 @@
 <section align = "center", id = "juego">
     <h1 align = "center"> ♱ Sobre el juego ♱ </h1> 
     <p class="centrado">
-    
-        Una vez iniciado el juego, tomas el control de tu personaje predeterminado 
-        "El Mago". Tu misión es abrirte paso a través de la mazmorra derrotando a los 
-        tres guardianes que bloquean tu camino. La dificultad es progresiva: cada 
+        Una vez iniciado el juego, tomas el control de tu personaje predeterminado <br> 
+        "El Mago". Tu misión es abrirte paso a través de la mazmorra derrotando a los <br> 
+        tres guardianes que bloquean tu camino. La dificultad es progresiva: cada <br> 
         enemigo es más fuerte que el anterior, exigiendo que domines tus hechizos.
 </p>
-</section> <br>
+</section> <br> <br> 
 
 <section align = "center", id = "controles">
     <h1 align = "center"> Controles </h1> 
@@ -32,38 +31,34 @@
     <h2 align = "center"> Mago </h2>
     <img src="cartaM.png" width =" 250px" />
     <p class="centrado">
-
-        Un anciano y sabio hechicero de larga barba blanca. 
+        Un anciano y sabio hechicero de larga barba blanca. <br> 
         Cuenta con ataques y movimientos rápidos, tiene tres vidas.
 </p> 
     <br> 
     <h2 align = "center"> Gusano putrefacto </h2>
     <img src="cartaG.png" width = "250px" />
     <p class="centrado">
-
-        El gusano emerge de un nido de huevos con una expresión 
-        maníaca, luciendo dos ojos saltones y desorbitados. 
+        El gusano emerge de un nido de huevos con una expresión <br> 
+        maníaca, luciendo dos ojos saltones y desorbitados. <br> 
         Cuenta con ataques y movimientos lentos, tiene tres vidas.
 </p> 
     <br> 
     <h2 align = "center" Caracol de tres cabezas> </h2>
     <img src="cartaC.png" width = "250px" />
     <p class="centrado">
-
-        El caracol es una monstruosa criatura híbrida, 
-        mitad caracol y mitad bestia. Cuenta con ataques 
+        El caracol es una monstruosa criatura híbrida, <br> 
+        mitad caracol y mitad bestia. Cuenta con ataques <br> 
         y movimientos rápidos, tiene cuatro vidas.
 </p> 
     <br> 
     <h2 align = "center"> Demonio </h2>
     <img src="cartaD.png" width="250px" />
     <p class="centrado">
-
-        El demonio es una aterradora entidad esquelética 
-        de tono amarillento. Cuenta con ataques
+        El demonio es una aterradora entidad esquelética <br> 
+        de tono amarillento. Cuenta con ataques <br> 
         y movimientos muy rápidos, tiene cinco vidas.
 </p>
-</section> 
+</section> <br>  <br> 
 
 <section align = "center", id = "niveles">
     <h1 align = "center"> Niveles </h1> 
@@ -73,22 +68,20 @@
 <section align = "center", id = "equipo">
     <h1 align = "center"> ♱ Equipo — 6bits ♱ </h1> 
     <p class="centrado">
-
-        • Sebastián Tomasín
-        • Elisa Laginestra
-        • Federico Silva
-        • Ezequiel Perezlindo
-        • Tomas Ferrero
+        • Sebastián Tomasín <br> 
+        • Elisa Laginestra <br> 
+        • Federico Silva <br> 
+        • Ezequiel Perezlindo <br> 
+        • Tomas Ferrero <br> 
         • Hirsch Alan
 </p>
-</section>
+</section> <br>
 
 <section align = "center", id="datos">
     <h1 align = "center"> Datos </h1> 
     <p class="centrado">
-
-        • Versión: 1.0.2
-        • Repositorio público
+        • Versión: 1.0.2 <br> 
+        • Repositorio público <br> 
         • Universidad Nacional de Hurlingham
 </p>
 </section>
