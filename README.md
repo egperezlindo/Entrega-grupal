@@ -1,5 +1,9 @@
 <style>
-    .centrado { text-align: center; max-width: 700px; margin: 0 auto;}
+    .centrado { 
+        text-align: center; 
+        max-width: 700px; 
+        margin: 0 auto;
+    }
 </style>
 
 <div style="text-align: center; width: 100%;">
@@ -10,7 +14,7 @@
 <section align = "center", id = "juego">
     <h1 align = "center"> ♱ Sobre el juego ♱ </h1> 
     <p class="centrado">
-
+    
         Una vez iniciado el juego, tomas el control de tu personaje predeterminado 
         "El Mago". Tu misión es abrirte paso a través de la mazmorra derrotando a los 
         tres guardianes que bloquean tu camino. La dificultad es progresiva: cada 
@@ -20,7 +24,7 @@
 
 <section align = "center", id = "controles">
     <h1 align = "center"> Controles </h1> 
-    <img src="controles.jpg" width="500px" />  
+    <img src="controles.jpg" width="500px" />   
 </section> <br> <br>
 
 <section align = "center", id = "Personajes">
@@ -70,12 +74,12 @@
     <h1 align = "center"> ♱ Equipo — 6bits ♱ </h1> 
     <p class="centrado">
 
-    • Sebastián Tomasín
-    • Elisa Laginestra
-    • Federico Silva
-    • Ezequiel Perezlindo
-    • Tomas Ferrero
-    • Hirsch Alan
+        • Sebastián Tomasín
+        • Elisa Laginestra
+        • Federico Silva
+        • Ezequiel Perezlindo
+        • Tomas Ferrero
+        • Hirsch Alan
 </p>
 </section>
 
@@ -83,9 +87,9 @@
     <h1 align = "center"> Datos </h1> 
     <p class="centrado">
 
-    • Versión: 1.0.2
-    • Repositorio público
-    • Universidad Nacional de Hurlingham
+        • Versión: 1.0.2
+        • Repositorio público
+        • Universidad Nacional de Hurlingham
 </p>
 </section>
 </div>
