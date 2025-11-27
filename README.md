@@ -1,11 +1,3 @@
-<style> 
-.centrado { 
-    text-align: center; 
-    max-width: 900px; 
-    margin: 0 auto; 
-}
-</style>
-
 <div style="text-align: center; width: 100%;">
 <section align = "center", id = "Presentacion">
     <img src="dungeons.gif" width="500px" />
@@ -13,7 +5,7 @@
 
 <section align = "center", id = "juego">
     <h1 align = "center"> ♱ Sobre el juego ♱ </h1> 
-    <p class="centrado">
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         Una vez iniciado el juego, tomas el control de tu personaje predeterminado <br> 
         "El Mago". Tu misión es abrirte paso a través de la mazmorra derrotando a los <br> 
         tres guardianes que bloquean tu camino. La dificultad es progresiva: cada <br> 
@@ -30,22 +22,22 @@
     <h1 align = "center"> ♱ Personajes del juego ♱ </h1>
     <h2 align = "center"> Mago </h2>
     <img src="cartaM.png" width =" 250px" />
-    <p class="centrado">
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         Un anciano y sabio hechicero de larga barba blanca. <br> 
         Cuenta con ataques y movimientos rápidos, tiene tres vidas.
 </p> 
     <br> 
     <h2 align = "center"> Gusano putrefacto </h2>
     <img src="cartaG.png" width = "250px" />
-    <p class="centrado">
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         El gusano emerge de un nido de huevos con una expresión <br> 
-        maníaca, luciendo dos ojos saltones y desorbitados. <br> 
+        maníaca, luciendo dos ojos saltones y desorbitados. <br>  
         Cuenta con ataques y movimientos lentos, tiene tres vidas.
 </p> 
     <br> 
     <h2 align = "center" Caracol de tres cabezas> </h2>
     <img src="cartaC.png" width = "250px" />
-    <p class="centrado">
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         El caracol es una monstruosa criatura híbrida, <br> 
         mitad caracol y mitad bestia. Cuenta con ataques <br> 
         y movimientos rápidos, tiene cuatro vidas.
@@ -53,7 +45,7 @@
     <br> 
     <h2 align = "center"> Demonio </h2>
     <img src="cartaD.png" width="250px" />
-    <p class="centrado">
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         El demonio es una aterradora entidad esquelética <br> 
         de tono amarillento. Cuenta con ataques <br> 
         y movimientos muy rápidos, tiene cinco vidas.
@@ -67,7 +59,7 @@
 
 <section align = "center", id = "equipo">
     <h1 align = "center"> ♱ Equipo — 6bits ♱ </h1> 
-    <p class="centrado">
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         • Sebastián Tomasín <br> 
         • Elisa Laginestra <br> 
         • Federico Silva <br> 
@@ -78,8 +70,8 @@
 </section> <br> 
 
 <section align = "center", id="datos">
-    <h1 align = "center"> Datos </h1> 
-    <p class="centrado">
+    <h1 align = "center"> Datos extra </h1> 
+    <p style="text-align: center; max-width: 900px; margin: 0 auto;">
         • Versión: 1.0.2 <br> 
         • Repositorio público <br> 
         • Universidad Nacional de Hurlingham
