@@ -63,7 +63,7 @@
 <section align = "center", id = "niveles">
     <h1 align = "center"> Niveles </h1> 
     <img src="niveles.png" width="900px" />
-</section>
+</section> <br> 
 
 <section align = "center", id = "equipo">
     <h1 align = "center"> ♱ Equipo — 6bits ♱ </h1> 
@@ -75,7 +75,7 @@
         • Tomas Ferrero <br> 
         • Hirsch Alan
 </p>
-</section> <br>
+</section> <br> 
 
 <section align = "center", id="datos">
     <h1 align = "center"> Datos </h1> 
