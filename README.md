@@ -60,21 +60,21 @@
 <section align = "center", id = "equipo">
     <h1 align = "center"> ♱ Equipo — 6bits ♱ </h1> 
     <p style="text-align: center; max-width: 900px; margin: 0 auto;">
-        • Sebastián Tomasín <br> 
-        • Elisa Laginestra <br> 
-        • Federico Silva <br> 
-        • Ezequiel Perezlindo <br> 
-        • Tomas Ferrero <br> 
-        • Hirsch Alan
+        Sebastián Tomasín <br> 
+        Elisa Laginestra <br> 
+        Federico Silva <br> 
+        Ezequiel Perezlindo <br> 
+        Tomas Ferrero <br> 
+        Hirsch Alan
 </p>
 </section> <br> 
 
 <section align = "center", id="datos">
     <h1 align = "center"> Datos extra </h1> 
     <p style="text-align: center; max-width: 900px; margin: 0 auto;">
-        • Versión: 1.0.2 <br> 
-        • Repositorio público <br> 
-        • Universidad Nacional de Hurlingham
+        Versión: 1.0.2 <br> 
+        Repositorio público <br> 
+        Universidad Nacional de Hurlingham
 </p>
 </section>
 </div>
