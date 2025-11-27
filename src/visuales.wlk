@@ -29,12 +29,14 @@ class Personaje inherits Visual {
     method perderVida() { vidas = (vidas - 1).max(0) }
     method mirarA(unaDireccion) { direccion = unaDireccion }
     method moverA(unaDireccion) {
-        if(!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) {
+        if(!menuPausa.abierto()) {
             self.mirarA(unaDireccion)
             if (self.puedeMoverseA(unaDireccion.siguiente(self.position()))) {
                 self.position(unaDireccion.siguiente(self.position()))
-            }
+                if (juegoPorNiveles.nivelActual().pincho().estaALaIzquierda(self.position())) 
+                { self.perderVida() }
             else { direccion = unaDireccion }
+            }
         }
     }
     method columnaBloquea(pos) = juegoPorNiveles.nivelActual().columnas().any({ c => c.bloqueaAlMago(pos) })
@@ -44,6 +46,7 @@ class Personaje inherits Visual {
     }
     method resetearVidas() { vidas = 3 }
     method estaMuerto() = vidas == 0
+    method mostrarDaño()
     override method tieneVidas() = vidas > 0
 }
 
@@ -76,7 +79,6 @@ object mago inherits Personaje (direccion = abajo) {
             const proyectil = new ProyectilMago(enemigo = self.enemigo())
             idMago.actualizarUltimoID()
             image = direccion.imageAtaque()
-            game.sound("punch.wav").play()
             proyectil.serLanzado()
         }
     }
@@ -88,13 +90,24 @@ object mago inherits Personaje (direccion = abajo) {
     override method perderVida() {
         super()
         self.mostrarCorazones()
+        self.mostrarDaño()
         if (self.estaMuerto()) { self.morir() }
+        game.sound("heartDown.wav").play()
     }
     override method mostrarCorazones() {
         (corazones + corazonesVacios).forEach({c => game.removeVisual(c)})
         (0..2).forEach({i =>
         if (i < vidas) game.addVisual(corazones.get(i))
         else game.addVisual(corazonesVacios.get(i))})
+    }
+    override method mostrarDaño() {
+        image = direccion.imageMagoDaño()
+        game.schedule(300, { image = direccion.imageMago() })
+    }
+    override method resetear() {
+        self.resetearPosicion() 
+        direccion = abajo
+        image = direccion.imageMago()
     }
     method initialize() {
         image = direccion.imageMago()
@@ -140,7 +153,6 @@ object gusano inherits Enemigo (direccion = izquierda) {
         if(!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) {
             const proyectil = new ProyectilGusano()
             idGusano.actualizarUltimoID()
-            game.sound("punch.wav").play() // cambiar sonido 
             proyectil.serLanzado()
         }
     }
@@ -152,7 +164,9 @@ object gusano inherits Enemigo (direccion = izquierda) {
     override method perderVida() {
         super()
         self.mostrarCorazones()
+        self.mostrarDaño()
         if (self.estaMuerto()) { self.morir() }
+        game.sound("enemieHurt.wav").play()
     }
     override method mostrarCorazones() {
         (corazones + corazonesVacios).forEach({c => game.removeVisual(c)})
@@ -160,7 +174,18 @@ object gusano inherits Enemigo (direccion = izquierda) {
         if (i < vidas) game.addVisual(corazones.get(i))
         else game.addVisual(corazonesVacios.get(i))})
     }
-    override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
+    override method morir() { 
+        game.sound("enemieDie.wav").play()
+        juegoPorNiveles.pasarASiguienteNivel() 
+    }
+    override method mostrarDaño() {
+        image = direccion.imageGusanoDaño()
+        game.schedule(300, { image = direccion.imageGusano() })
+    }
+    override method resetear() {
+        super()
+        image = direccion.imageGusano()
+    }
     method initialize() {
         image = direccion.imageGusano()
         position = game.at(8, 2)
@@ -173,18 +198,19 @@ object caracol inherits Enemigo (direccion = izquierda) {
     const property corazonesVacios = [corazonVacioC1, corazonVacioC2, corazonVacioC3, corazonVacioC4]
     override method comboEnemigo() { 
         game.onTick(650, "movimientoCaracol", { self.moverseEnemigo() }) 
-        game.onTick(1350, "ataqueCaracol", { self.atacar() })
+        game.onTick(1250, "ataqueCaracol", { self.atacar() })
     }
     override method moverseEnemigo() {
-        const siguiente = direccion.siguiente(position)
         if (!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) {
-            if (self.puedeMoverseA(siguiente)) { 
+            if (self.puedeMoverseA(direccion.siguiente(position))) { 
                 self.mirarA(direccion)
-                self.position(siguiente) 
-            }
-            else { 
-                self.invertirDireccion() 
                 self.position(direccion.siguiente(position)) 
+            } 
+            else { 
+                self.invertirDireccion()
+                if (self.puedeMoverseA(direccion.siguiente(position))) {
+                    self.position(direccion.siguiente(position))
+                }
             }
         }
     }
@@ -200,18 +226,18 @@ object caracol inherits Enemigo (direccion = izquierda) {
     }
     override method atacar() {
         if(!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) {
-            if (self.estaEnEsquina()) { self.invertirDireccion() }
-            const proyectil = new ProyectilCaracol()
-            idCaracol.actualizarUltimoID()
-            game.sound("punch.wav").play() // cambiar sonido 
-            proyectil.serLanzado()
+            if (!self.estaEnEsquina()) { 
+                const proyectil = new ProyectilCaracol()
+                idCaracol.actualizarUltimoID()
+                proyectil.serLanzado()
+            } else { self.invertirDireccion() }
         }
     }
     method estaEnEsquina() =
         (position.x() == 1  && position.y() == 2)  ||
         (position.x() == 17 && position.y() == 2)  ||
         (position.x() == 17 && position.y() == 17) ||
-        (position.x() == 2  && position.y() == 17)
+        (position.x() == 1  && position.y() == 17)
     override method resetearPosicion() { position = game.at(8, 2) }
     override method resetearVidas() { 
         vidas = 4
@@ -220,7 +246,9 @@ object caracol inherits Enemigo (direccion = izquierda) {
     override method perderVida() {
         super()
         self.mostrarCorazones()
+        self.mostrarDaño()
         if (self.estaMuerto()) { self.morir() }
+        game.sound("enemieHurt.wav").play()
     }
     override method mostrarCorazones() {
         (corazones + corazonesVacios).forEach({c => game.removeVisual(c)})
@@ -228,7 +256,18 @@ object caracol inherits Enemigo (direccion = izquierda) {
         if (i < vidas) game.addVisual(corazones.get(i))
         else game.addVisual(corazonesVacios.get(i))})
     }
-    override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
+    override method morir() { 
+        game.sound("enemieDie.wav").play()
+        juegoPorNiveles.pasarASiguienteNivel() 
+    }
+    override method mostrarDaño() {
+        image = direccion.imageCaracolDaño()
+        game.schedule(300, { image = direccion.imageCaracol() })
+    }
+    override method resetear() {
+        super()
+        image = direccion.imageCaracol()
+    }
     method initialize() {
         image = direccion.imageCaracol()
         position = game.at(8, 2)
@@ -241,15 +280,19 @@ object demonio inherits Enemigo (direccion = izquierda) {
     const property corazonesVacios = [corazonVacioD1, corazonVacioD2, corazonVacioD3, corazonVacioD4, corazonVacioD5]
     override method comboEnemigo() { 
         game.onTick(500, "movimientoDemonio", { self.moverseEnemigo() }) 
-        game.onTick(1150, "ataqueDemonio", { self.atacar() })
+        game.onTick(1100, "ataqueDemonio", { self.atacar() })
     }
     override method moverseEnemigo() {
-        const siguiente = direccion.siguiente(position)
         if (!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) {
-            if (self.puedeMoverseA(siguiente)) { self.position(siguiente) }
-            else {
-                self.invertirDireccion()
+            if (self.puedeMoverseA(direccion.siguiente(position))) { 
+                self.mirarA(direccion)
                 self.position(direccion.siguiente(position)) 
+            } 
+            else { 
+                self.invertirDireccion()
+                if (self.puedeMoverseA(direccion.siguiente(position))) {
+                    self.position(direccion.siguiente(position))
+                }
             }
         }
     }
@@ -259,42 +302,53 @@ object demonio inherits Enemigo (direccion = izquierda) {
         pos.y() >= 2 &&
         pos.x() <= 17 &&
         pos.y() <= 17
+    override method mirarA(unaDireccion) {
+        super(unaDireccion)
+        image = unaDireccion.imageDemonio()
+    }
     override method atacar() {
         if(!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) {
-            if (self.estaEnEsquina()) { self.invertirDireccion() }
-            const proyectil = new ProyectilDemonio()
-            idDemonio.actualizarUltimoID()
-            game.sound("punch.wav").play() // cambiar sonido 
-            proyectil.serLanzado()
+            if (!self.estaEnEsquina()) { 
+                const proyectil = new ProyectilDemonio()
+                idDemonio.actualizarUltimoID()
+                proyectil.serLanzado()
+            } else { self.invertirDireccion() }
         }
     }
     method estaEnEsquina() =
         (position.x() == 1  && position.y() == 2)  ||
         (position.x() == 17 && position.y() == 2)  ||
         (position.x() == 17 && position.y() == 17) ||
-        (position.x() == 2  && position.y() == 17)
-    override method mirarA(unaDireccion) {
-        if(self.puedeMoverseA(unaDireccion)) { 
-            super(unaDireccion)
-            image = unaDireccion.imageDragon()
-        }
-    }
+        (position.x() == 1  && position.y() == 17)
     override method resetearPosicion() { position = game.at(8, 2) }
     override method resetearVidas() { 
         vidas = 5
         self.mostrarCorazones()
     }
-    override method morir() { juegoPorNiveles.pasarASiguienteNivel() }
+    override method morir() { 
+        game.sound("enemieDie.wav").play()
+        juegoPorNiveles.pasarASiguienteNivel() 
+    }
     override method perderVida() {
         super()
         self.mostrarCorazones()
+        self.mostrarDaño()
         if (self.estaMuerto()) { self.morir() }
+        game.sound("enemieHurt.wav").play()
     }
     override method mostrarCorazones() {
         (corazones + corazonesVacios).forEach({c => game.removeVisual(c)})
         (0..4).forEach({i =>
         if (i < vidas) game.addVisual(corazones.get(i))
         else game.addVisual(corazonesVacios.get(i))})
+    }
+    override method mostrarDaño() {
+        image = direccion.imageDemonioDaño()
+        game.schedule(300, { image = direccion.imageDemonio() })
+    }
+    override method resetear() {
+        super()
+        image = direccion.imageDemonio()
     }
     method initialize() {
         image = direccion.imageDemonio()
@@ -312,10 +366,10 @@ class Pincho inherits Visual (position = game.center()) {
         const x = 5.randomUpTo(15).truncate(0)
         const y = 5.randomUpTo(15).truncate(0)
         position = game.at(x,y)
-        if (!self.columnaBloquea(position)) {
-           game.addVisual(self) 
+        if (!self.posicionBloqueada(position)) { 
+            game.addVisual(self)
+            if (self.estaALaIzquierda(mago.position())) { mago.perderVida() }
         }
-        
     } 
   }
   method ponerse() {
@@ -325,8 +379,12 @@ class Pincho inherits Visual (position = game.center()) {
   method aparece() {
     game.addVisual(self)
     self.ponerse()
+    if (self.estaALaIzquierda(mago.position())) { mago.perderVida() }
   }
-  method columnaBloquea(pos) = juegoPorNiveles.nivelActual().columnas().any({ c => c.bloqueaAlPincho(pos) })
+  method posicionBloqueada(pos) =  juegoPorNiveles.nivelActual().columnas().any{ c => c.bloqueaPincho(pos, c.position(), 3) }
+  method estaALaIzquierda(posMago) =
+    posMago.x() == position.x() - 1 &&
+    posMago.y() == position.y()
   method initialize() {
     tickId = idPincho.nuevoId("movPincho")
     image = "spikes.gif"

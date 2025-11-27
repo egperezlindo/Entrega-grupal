@@ -9,7 +9,7 @@ class Musica {
             estado = true
             sonido = game.sound(archivo)
             sonido.shouldLoop(true)
-            sonido.volume(0.2)
+            sonido.volume(0.4)
             sonido.play()
         }
     }
@@ -27,32 +27,32 @@ class Musica {
 object musicaDeFondo inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("MBMenu.mp3")
-        archivo = "MBMenu.MP3"
+        sonido = game.sound("menu.mp3")
+        archivo = "menu.MP3"
     }
 }
 
 object musicaNivel1 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("clintEastwood.mp3")
-        archivo = "clintEastwood.mp3"
+        sonido = game.sound("nivelUno.ogg")
+        archivo = "nivelUno.ogg"
     }
 }
 
 object musicaNivel2 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("clintEastwood.mp3")
-        archivo = "clintEastwood.mp3"
+        sonido = game.sound("nivelDos.mp3")
+        archivo = "nivelDos.mp3"
     }
 }
 
 object musicaNivel3 inherits Musica {
     method initialize() {
         estado = false
-        sonido = game.sound("clintEastwood.mp3")
-        archivo = "clintEastwood.mp3"
+        sonido = game.sound("nivelTres.wav")
+        archivo = "nivelTres.wav"
     }
 }
 

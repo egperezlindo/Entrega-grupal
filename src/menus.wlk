@@ -25,17 +25,16 @@ object menuInicio inherits Menu {
         }
     override method cerrar() {
         if(!pantallaUno.abierto()){
-        game.sound("open.wav")
+        game.sound("open.wav").play()
         abierto = false
         game.removeVisual(self)
         musica.stop()
         juegoPorNiveles.nivelActual().initialize()
         juegoPorNiveles.nivelActual().pantalla().abrir()
         }
-        
     }
     method initialize() {
-        image = "inicio.jpg"
+        image = "inicio.gif"
         position = game.at(0,0)
     }
 }
@@ -43,14 +42,14 @@ object menuInicio inherits Menu {
 object menuPausa inherits Menu () {
     var property abierto = false 
     override method abrir() { 
-        game.sound("pause.wav")
+        game.sound("pause.wav").play()
         if(!abierto and !juegoPorNiveles.nivelActual().pantalla().abierto() and !menuInicio.abierto()) {
             abierto = true
             game.addVisual(self)
             juegoPorNiveles.nivelActual().musica().pausar()
             self.configuracionTeclado()
         } else if(!menuControles.abierto()) {
-            game.sound("close.wav")
+            game.sound("close.wav").play()
             abierto = false
             game.removeVisual(self)
             juegoPorNiveles.nivelActual().musica().reanudar()
@@ -65,7 +64,7 @@ object menuPausa inherits Menu () {
     method initialize() {
         self.configuracionTeclado()
         image = "pausa.png"
-        position = game.at(-1,0)
+        position = game.at(0,0)
     }
 }
 
@@ -84,6 +83,7 @@ object menuGanador inherits Menu (image = "ganar.jpeg", position = game.at(0,0))
         abierto = false
         game.removeVisual(self)
         musica.stop()
+        game.sound("close.wav").play()
     }
     override method configuracionTeclado() {
         keyboard.space().onPressDo({ 
@@ -108,6 +108,7 @@ object menuPerdedor inherits Menu (image = "perder.png", position = game.at(0,0)
         abierto = false
         game.removeVisual(self)
         musica.stop()
+        game.sound("close.wav").play()
     }
     override method configuracionTeclado() {
         keyboard.space().onPressDo({ 
@@ -117,22 +118,22 @@ object menuPerdedor inherits Menu (image = "perder.png", position = game.at(0,0)
     }
 }
 
-object menuControles inherits Menu (image = "controles.png", position = game.at(0,0)){ 
+object menuControles inherits Menu (image = "controles.jpg", position = game.at(0,0)){ 
     var property abierto = false
     override method abrir() {
         if(!abierto and menuPausa.abierto()){
-            game.sound("pause.wav")
+            game.sound("pause.wav").play()
             abierto = true
             game.addVisual(self)
             self.configuracionTeclado()
         }
-        else if(!abierto and menuInicio.abierto()){
+        else if(!abierto and menuInicio.abierto()) {
             game.sound("close.wav")
             abierto = true
             game.addVisual(self)
             self.configuracionTeclado()
         }
-        else{
+        else {
             abierto = false
             game.removeVisual(self)
         }
@@ -149,6 +150,7 @@ object pantallaUno inherits Menu (position = game.at(0,0), image = "pantallaUno.
         self.configuracionTeclado()
     }
     override method cerrar() {
+        game.sound("pass.wav").play()
         abierto = false
         game.removeVisual(self)
         juegoPorNiveles.nivelActual().iniciarNivel()
@@ -159,11 +161,13 @@ object pantallaUno inherits Menu (position = game.at(0,0), image = "pantallaUno.
 object pantallaDos inherits Menu (position = game.origin(), image = "pantallaDos.jpg") {
     var property abierto = false
     override method abrir() {
+        game.sound("levelUp.wav").play()
         abierto = true
         game.addVisual(self)
         self.configuracionTeclado()
     }
     override method cerrar() {
+        game.sound("pass.wav").play()
         abierto = false
         game.removeVisual(self)
         juegoPorNiveles.nivelActual().iniciarNivel()
@@ -174,11 +178,13 @@ object pantallaDos inherits Menu (position = game.origin(), image = "pantallaDos
 object pantallaTres inherits Menu (position = game.origin(), image = "pantallaTres.jpg") {
     var property abierto = false
     override method abrir() {
+        game.sound("levelUp.wav").play()
         abierto = true
         game.addVisual(self)
         self.configuracionTeclado()
     }
     override method cerrar() {
+        game.sound("pass.wav").play()
         abierto = false
         game.removeVisual(self)
         juegoPorNiveles.nivelActual().iniciarNivel()

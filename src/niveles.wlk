@@ -9,6 +9,7 @@ import wollok.game.*
 
 class Nivel inherits Visual (position = game.origin()) {
   const enemigos = [gusano, caracol, demonio]
+  var property pincho
   var property enemigo
   var property pantalla
   var property musica 
@@ -49,9 +50,9 @@ class Nivel inherits Visual (position = game.origin()) {
   method agregarPincho()
 }
 
-object nivelUno inherits Nivel {
+object nivelUno inherits Nivel (pincho = new Pincho(segundos = 5000)) {
   override method agregarPincho() {
-    const pincho = new Pincho(segundos = 5000)
+    pincho = new Pincho(segundos = 5000)
     idPincho.actualizarUltimoID()
     pincho.aparece()
   }
@@ -65,9 +66,9 @@ object nivelUno inherits Nivel {
   }
 }
 
-object nivelDos inherits Nivel {
+object nivelDos inherits Nivel (pincho = new Pincho(segundos = 3000)) {
   override method agregarPincho() {
-    const pincho = new Pincho(segundos = 3000)
+    pincho = new Pincho(segundos = 3000)
     idPincho.actualizarUltimoID()
     pincho.aparece()
   }
@@ -81,9 +82,9 @@ object nivelDos inherits Nivel {
   }
 }
 
-object nivelTres inherits Nivel {
+object nivelTres inherits Nivel (pincho = new Pincho(segundos = 1500)) {
   override method agregarPincho() {
-    const pincho = new Pincho(segundos = 2000)
+    pincho = new Pincho(segundos = 2000)
     idPincho.actualizarUltimoID()
     pincho.aparece()
   }
@@ -106,21 +107,10 @@ class Columna inherits Visual {
       (pos.x() == x && pos.y() == y - 1) ||
       (pos.x() == x && pos.y() == y + 1)
   }
-  method bloqueaAlPincho(pos) {
-    const x = position.x()
-    const y = position.y()
-    return
-      (pos.x() == x && pos.y() == y) ||
-      (pos.x() == x && pos.y() == y - 1) ||
-      (pos.x() == x && pos.y() == y + 1) ||
-      (pos.x() == x && pos.y() == y + 2) ||
-      (pos.x() == x - 1 && pos.y() == y) ||
-      (pos.x() == x + 1 && pos.y() == y) ||
-      (pos.x() == x - 1 && pos.y() == y - 1) ||
-      (pos.x() == x + 1 && pos.y() == y - 1) ||
-      (pos.x() == x - 1 && pos.y() == y + 1) ||
-      (pos.x() == x + 1 && pos.y() == y + 1)
-}
+  method bloqueaPincho(pos, columnaPos, radio) =
+    (pos.x() - columnaPos.x()) <= radio &&
+    (pos.y() - columnaPos.y()) <= radio
+
 }
 
 // columnas - nivel 1
@@ -129,7 +119,7 @@ const columna2N1 = new Columna(image = "columna1.png", position = game.at(8,12))
 const columna3N1 = new Columna(image = "columna1.png", position = game.at(6,6))
 
 // columnas - nivel 2
-const columna1N2 = new Columna(image = "columna2.png", position = game.at(12,11))
+const columna1N2 = new Columna(image = "columna2.png", position = game.at(12,12))
 const columna2N2 = new Columna(image = "columna2.png", position = game.at(6,6))
 
 // columnas - nivel 3
