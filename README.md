@@ -1,11 +1,15 @@
-<div text-align: center;>
+<style>
+    .centrado { text-align: center; max-width: 700px; margin: 0 auto;}
+</style>
+
+<div style="text-align: center; width: 100%;">
 <section align = "center", id = "Presentacion">
     <img src="dungeons.gif" width="500px" />
 </section>
 
 <section align = "center", id = "juego">
-    <h1 align = "center" > ♱ Sobre el juego ♱ </h1> 
-    <p align = "center" >
+    <h1 align = "center"> ♱ Sobre el juego ♱ </h1> 
+    <p class="centrado">
 
         Una vez iniciado el juego, tomas el control de tu personaje predeterminado 
         "El Mago". Tu misión es abrirte paso a través de la mazmorra derrotando a los 
@@ -23,7 +27,7 @@
     <h1 align = "center"> ♱ Personajes del juego ♱ </h1>
     <h2 align = "center"> Mago </h2>
     <img src="cartaM.png" width =" 250px" />
-    <p align = "center">
+    <p class="centrado">
 
         Un anciano y sabio hechicero de larga barba blanca. 
         Cuenta con ataques y movimientos rápidos, tiene tres vidas.
@@ -31,7 +35,7 @@
     <br> 
     <h2 align = "center"> Gusano putrefacto </h2>
     <img src="cartaG.png" width = "250px" />
-    <p align = "center">
+    <p class="centrado">
 
         El gusano emerge de un nido de huevos con una expresión 
         maníaca, luciendo dos ojos saltones y desorbitados. 
@@ -40,7 +44,7 @@
     <br> 
     <h2 align = "center" Caracol de tres cabezas> </h2>
     <img src="cartaC.png" width = "250px" />
-    <p align = "center">
+    <p class="centrado">
 
         El caracol es una monstruosa criatura híbrida, 
         mitad caracol y mitad bestia. Cuenta con ataques 
@@ -49,7 +53,7 @@
     <br> 
     <h2 align = "center"> Demonio </h2>
     <img src="cartaD.png" width="250px" />
-    <p align = "center">
+    <p class="centrado">
 
         El demonio es una aterradora entidad esquelética 
         de tono amarillento. Cuenta con ataques
@@ -64,7 +68,7 @@
 
 <section align = "center", id = "equipo">
     <h1 align = "center"> ♱ Equipo — 6bits ♱ </h1> 
-    <p align = "center">
+    <p class="centrado">
 
     • Sebastián Tomasín
     • Elisa Laginestra
@@ -77,7 +81,7 @@
 
 <section align = "center", id="datos">
     <h1 align = "center"> Datos </h1> 
-    <p align = "center">
+    <p class="centrado">
 
     • Versión: 1.0.2
     • Repositorio público
