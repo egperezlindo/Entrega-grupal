@@ -4,16 +4,17 @@
 
 <div align = "center" id = "juego">
     <h1 align="center"> ♱ Sobre el juego ♱ </h1> 
+    <summary align = "center">
 
-    Una vez iniciado el juego, empieza con tu 
-    personaje predeterminado "El mago", donde tiene que
-    atacar a los diferentes enemigos para ganar. 
-
+        Una vez iniciado el juego, tomas el control de tu personaje predeterminado "El Mago". Tu misión es abrirte paso a través
+        de la mazmorra derrotando a los tres guardianes que bloquean
+        tu camino. La dificultad es progresiva: cada enemigo es más fuerte que el anterior, exigiendo que domines tus hechizos y gestiones tus recursos sabiamente. 
+</sumary>
 </div> <br>
 
 <div align = "center" id = "controles">
-    <h1 align="center"> Controles </h1> 
-    <p align= "left" >
+    <h1 align = "center"> Controles </h1> 
+    <sumary align = "center" >
 
         W — Arriba
         S — Abajo
@@ -21,38 +22,38 @@
         A — Izquierda
         F — Atacar
         P — Pausa/Reanudar
-</p>    
+</sumary>    
 </div> <br>
 
 <h1 align = "center"> ♱ Personajes del juego ♱ </h1>
 
 <div align = "center" id = "Personajes">
-    <summary>
+    <summary align = "center">
     <h1 align="center"> Mago </h1>
     <img src="cartaM.png" width="200px" />
 
-        El mago cuenta con ataques y movimientos rápidos, tiene tres vidas.
+        Un anciano y sabio hechicero de larga barba blanca. Cuenta con ataques y movimientos rápidos, tiene tres vidas.
 </sumary> 
     <br> </br>
-    <summary>
+    <summary align = "center">
     <h1 align="center"> Gusano putrefacto </h1>
     <img src="cartaG.png" width="200px" />
 
-        El gusano cuenta con ataques y movimientos lentos, tiene tres vidas.
+        El gusano emerge de un nido de huevos con una expresión maníaca, luciendo dos ojos saltones y desorbitados. cuenta con ataques y movimientos lentos, tiene tres vidas.
 </sumary> 
     <br> </br>
-    <summary>
+    <summary align = "center">
     <h1 align="center"> Caracol de tres cabezas </h1>
     <img src="cartaC.png" width="200px" />
     
-        El caracol cuenta con ataques y movimientos rápidos, tiene cuatro vidas.
+        El caracol es una monstruosa criatura híbrida, mitad caracol y mitad bestia. Cuenta con ataques y movimientos rápidos, tiene cuatro vidas.
 </sumary> 
     <br> </br>
-    <summary>
+    <summary align = "center">
     <h1 align="center"> Demonio </h1>
     <img src="cartaD.png" width="200px" />
     
-        El demonio cuenta con ataques y movimientos muy rápidos, tiene cinco vidas.
+        El demonio es una aterradora entidad esquelética de tono amarillento.Cuenta con ataques y movimientos muy rápidos, tiene cinco vidas.
 </sumary>
 </div> 
 
