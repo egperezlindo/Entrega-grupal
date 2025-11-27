@@ -13,25 +13,14 @@ class Musica {
             sonido.play()
         }
     }
-    method pausar() { if(estado) { sonido.pause() } }
-    method reanudar() {
-    if (estado && sonido != null) {
-        sonido.resume()
-    }
+    method pausar() { if(estado) {sonido.pause()}}
+    method reanudar() {if(estado && sonido != null) {sonido.resume()}
 }
     method stop() {
         if(estado) {
             estado = false
             sonido.stop()
         }
-    }
-    method reiniciar() {
-        estado = true
-        sonido = game.sound(archivo)
-        sonido.stop()
-        sonido.shouldLoop(true)
-        sonido.volume(0.2)
-        sonido.play()
     }
 }
 

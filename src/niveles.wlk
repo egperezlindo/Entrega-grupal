@@ -32,8 +32,9 @@ class Nivel inherits Visual (position = game.origin()) {
       self.agregarColumnas()
       self.agregarPincho()
     }
-    method volverAlMenu() {
+  method volverAlMenu() {
     iniciado = false
+    musica.reanudar()
     musica.stop()
     game.clear()
     mago.resetearVidas()
@@ -42,10 +43,10 @@ class Nivel inherits Visual (position = game.origin()) {
     menuPausa.abierto(false)
     menuInicio.abrir()
   }
-    method estaGanado() = enemigo.estaMuerto()
-    method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
-    method agregarColumnas()
-    method agregarPincho()
+  method estaGanado() = enemigo.estaMuerto()
+  method enemigoVivoEn(unaPosicion) = enemigo.position() == unaPosicion
+  method agregarColumnas()
+  method agregarPincho()
 }
 
 object nivelUno inherits Nivel {

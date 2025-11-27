@@ -3,13 +3,14 @@ import config.*
 import visuales.*
 import movimientos.*
 import wollok.game.*
+import niveles.*
 
 class Proyectil inherits Visual (position = direccionDisparo.siguiente(personaje.position())) {
     var property personaje
     var property direccionDisparo
     method serLanzado() { game.addVisual(self) }
     method moverseRecto() {
-        if(!menuPausa.abierto()) { self.position(direccionDisparo.siguiente(self.position())) }
+        if(!menuPausa.abierto() and !juegoPorNiveles.nivelActual().pantalla().abierto()) { self.position(direccionDisparo.siguiente(self.position())) }
     }
     method estaFuera() = 
         position.x() > game.width() or
