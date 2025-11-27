@@ -1,55 +1,83 @@
-# Wollok Dungeons
+<div align = "center" id = "Presentacion">
+    <img src="dungeons.gif" width="500px" />
+</div>
 
-<img src="presentacion.png" width="500px" />
+<div align = "center" id = "juego">
+    <h1 align="center"> ♱ Sobre el juego ♱ </h1> 
 
-## Reglas del juego / Instrucciones
-Una vez iniciado el juego, tomas el control de tu personaje predeterminado: "El Mago". Tu misión es abrirte paso a través de la mazmorra derrotando a los tres guardianes que bloquean tu camino. La dificultad es progresiva: cada enemigo es más fuerte que el anterior, exigiendo que domines tus hechizos y gestiones tus recursos sabiamente.
+    Una vez iniciado el juego, empieza con tu 
+    personaje predeterminado "El mago", donde tiene que
+    atacar a los diferentes enemigos para ganar. 
 
-## ¿QUIEN ERES?
+</div> <br>
 
-## Mago
-<img src="cartaCaracol" width="500px" />
-"Un anciano y sabio hechicero de larga barba blanca. Viste una túnica y un sombrero puntiagudo de color azul profundo, adornado con una luna creciente. Porta un báculo místico con un orbe brillante, que utiliza para canalizar su energía y arrojar proyectiles mágicos a sus enemigos desde la distancia."
+<div align = "center" id = "controles">
+    <h1 align="center"> Controles </h1> 
+    <p align= "left" >
 
+        W — Arriba
+        S — Abajo
+        D — Derecha
+        A — Izquierda
+        F — Atacar
+        P — Pausa/Reanudar
+</p>    
+</div> <br>
 
+<h1 align = "center"> ♱ Personajes del juego ♱ </h1>
 
-## ENEMIGOS
+<div align = "center" id = "Personajes">
+    <summary>
+    <h1 align="center"> Mago </h1>
+    <img src="cartaM.png" width="200px" />
 
-## Gusano // LVL1
-<img src="cartaGusano" width="500px" />
+        El mago cuenta con ataques y movimientos rápidos, tiene tres vidas.
+</sumary> 
+    <br> </br>
+    <summary>
+    <h1 align="center"> Gusano putrefacto </h1>
+    <img src="cartaG.png" width="200px" />
 
-"Una monstruosidad subterránea de piel pálida y violácea. Emerge de un nido de huevos con una expresión maníaca, luciendo dos ojos saltones y desorbitados. Su enorme boca abierta revela hileras de dientes irregulares, mientras un aura oscura y electrizante rodea su cuerpo retorcido."
+        El gusano cuenta con ataques y movimientos lentos, tiene tres vidas.
+</sumary> 
+    <br> </br>
+    <summary>
+    <h1 align="center"> Caracol de tres cabezas </h1>
+    <img src="cartaC.png" width="200px" />
+    
+        El caracol cuenta con ataques y movimientos rápidos, tiene cuatro vidas.
+</sumary> 
+    <br> </br>
+    <summary>
+    <h1 align="center"> Demonio </h1>
+    <img src="cartaD.png" width="200px" />
+    
+        El demonio cuenta con ataques y movimientos muy rápidos, tiene cinco vidas.
+</sumary>
+</div> 
 
-## Caracol // LVL2
-<img src="cartaCaracol" width="500px" />
-"Una monstruosa criatura híbrida, mitad caracol y mitad bestia. Posee un caparazón en espiral de color púrpura del cual emergen tres feroces cabezas de rasgos reptilianos, cada una con dientes afilados y una melena violeta alborotada."
+<div align = "center" id = "niveles">
+    <h1 align="center"> Niveles </h1> 
+    <img src="niveles.png" width="900px" />
+</div>
 
+<div align = "center" id = "equipo">
+    <h1 align="center"> ♱ Equipo — 6bits ♱ </h1> 
 
-## Demonio // LVL3
-<img src="cartaDemonio" width="500px" />
-"Una aterradora entidad esquelética de tono verdoso. Posee un cráneo con cuernos curvados y una caja torácica expuesta, en cuyo centro brilla intensamente un orbe de energía blanca. Sus manos huesudas están alzadas en posición de amenaza, mientras su cuerpo inferior se desvanece en una estela espectral."
+    • Sebastián Tomasín
+    • Elisa Laginestra
+    • Federico Silva
+    • Ezequiel Perezlindo
+    • Tomas Ferrero
+    • Hirsch Alan
 
+</div>
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## CONTROLES 
+<div align = "center" id = "extras">
+    <h1 align = "center"> Datos </h1> 
 
-<img src="controles.png" width="500px" />
-
-
-
-
-
-## Equipo
-- Sebastián Tomasín
-- Ezequiel Perezlindo
-- Federico Silva
-- Elisa Laginestra
-- Tomas Ferrero
-- Hirsch Alan
-
-## Otros
-Programación con Objetos I — UNAHUR
-
-Versión de Wollok: 1.0.2
-
-Privado
+    • Versión: 1.0.2
+    • Repositorio público
+    • Universidad Nacional de Hurlingham
+    
+</div>
