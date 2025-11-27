@@ -1,15 +1,11 @@
-<style>
-    .centrado { 
-        text-align: center; 
-        max-width: 900px; 
-        margin: 0 auto;
-    }
-</style>
-
 <div style="text-align: center; width: 100%;">
 <section align = "center", id = "Presentacion">
     <img src="dungeons.gif" width="500px" />
 </section>
+
+<style> 
+.centrado { text-align: center; max-width: 900px; margin: 0 auto; }
+</style>
 
 <section align = "center", id = "juego">
     <h1 align = "center"> ♱ Sobre el juego ♱ </h1> 
